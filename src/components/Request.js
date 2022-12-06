@@ -13,7 +13,7 @@ export const requestToApi = {
             }
         else {
             header = {
-                'Accept': 'application/json',
+                'Accept': 'application/json' ,
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + tokenAccess.value}
             }
@@ -27,5 +27,9 @@ export const requestToApi = {
 
     updateToken: (token) => {
         tokenAccess.value = token
+    },
+
+    getToken: () => {
+        console.log(tokenAccess.value)
     }
 }

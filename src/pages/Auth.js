@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import {Button, Container, FormGroup, Label, Table} from 'reactstrap';
-import {useNavigate} from "react-router-dom";
+import { Button, Form, Input, Checkbox } from 'antd';
+import {Container, FormGroup, Label, Table} from 'reactstrap';
 import {requestToApi} from '../components/Request';
-import '../App.css'
+import {useNavigate} from "react-router-dom";
+import '../App.css';
 
 
 export default function Auth(){
@@ -17,7 +18,8 @@ export default function Auth(){
     function handleChange(event) {
         const target = event.target;
         const value = target.value;
-        if (target.name === "username"){AuthEntity.username = value}
+        console.log(target.name)
+        if (target.name === "userName"){AuthEntity.username = value}
         if (target.name === "password"){AuthEntity.password = value}
     }
 
@@ -35,6 +37,7 @@ export default function Auth(){
             })
             .then(data => {
                 requestToApi.updateToken(data.accessToken)
+                navigate("/lk")
             });
     }
 
@@ -42,24 +45,41 @@ export default function Auth(){
         <div className='authFormOuter'>
             <div className='authFormMiddle'>
                 <div className='authFormInner'>
-                    <Container fluid>
-                        <Table>
-                            <tbody>
-                                <tr>
-                                    <td><Label for="username">Логин</Label></td>
-                                    <td><input type="text" name="username" id="username" onChange={handleChange}/></td>
-                                </tr>
-                                <tr>
-                                    <td><Label for="password">Пароль</Label></td>
-                                    <td><input type="text" name="password" id="password" onChange={handleChange}/></td>
-                                </tr>
-                                <tr>
-                                    <td><Button color="primary" type="submit" onClick={handleSubmit}>Войти</Button></td>
-                                    <td><Button color="secondary" onClick={() => window.location.reload()}>Сброс</Button></td>
-                                </tr>
-                            </tbody>
-                        </Table>
-                    </Container>
+                    <Form
+                        layout={"vertical"}            
+                        name="formLogin"
+                        style={{ padding: 20 }}
+                        initialValues={{}}>
+
+                        <Form.Item
+                            name="userName"
+                            label="Имя пользователя"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Имя пользователя не может быть пустым"
+                                }
+                            ]}>
+                            <Input name="userName" onChange={handleChange} placeholder="Login"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            name="password"
+                            label="Пароль"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Пароль не может быть пустым"
+                                }
+                            ]}
+                        >
+                            <Input.Password name="password" onChange={handleChange} placeholder="Password"/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button onClick={handleSubmit} className='enterButton'>Войти</Button>
+                            <Button onClick={handleSubmit} className='forgetButton'>Регистрация</Button>
+                        </Form.Item>
+                    </Form>
                 </div>
             </div>
         </div>

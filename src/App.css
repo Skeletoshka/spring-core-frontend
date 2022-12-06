@@ -1,9 +1,40 @@
 .authFormOuter {
   display: table;
   position: absolute;
-  top: 0;
   left: 0;
   height: 100%;
+  width: 100%;
+  background-image:url('./img/auth/фон.png');
+  background-size: 100% 100%;
+  opacity: 0.8;
+}
+
+.enterButton {
+  background-color: orange;
+}
+.forgetButton {
+  float: right;
+}
+.header{
+  background-color: orange;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 5%;
+  width: 100%;
+}
+
+.header-logo{
+  height: 100%;
+  width: 10%;
+  background-image:url('./img/auth/logo.png');
+  background-size: 10% 20%;
+}
+.body-div{
+  display: table;
+  position: absolute;
+  top: 5%;
+  height: 95%;
   width: 100%;
 }
 
@@ -15,9 +46,17 @@
 .authFormInner {
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  width: 250px;
   /* Whatever width you want */
 }
 :root{
-  background-color:darkblue;
+  background-color: white;
+}
+.rightButton{
+  width:45%;
+  margin: auto;
+}
+.leftButton{
+  width:45%;
+  margin: 0 0 0 10%;
 }
