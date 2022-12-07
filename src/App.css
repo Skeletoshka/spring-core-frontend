@@ -15,6 +15,7 @@
 .forgetButton {
   float: right;
 }
+
 .header{
   background-color: orange;
   position: absolute;
@@ -30,6 +31,7 @@
   background-image:url('./img/auth/logo.png');
   background-size: 10% 20%;
 }
+
 .body-div{
   display: table;
   position: absolute;
@@ -77,10 +79,12 @@
 :root{
   background-color: white;
 }
+
 .rightButton{
   width:45%;
   margin: auto;
 }
+
 .leftButton{
   width:45%;
   margin: 0 0 0 10%;
