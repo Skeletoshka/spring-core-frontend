@@ -12,7 +12,7 @@ export default function Registry() {
         email:"",
         role: [
             {
-                accessRoleId: 0,
+                accessRoleId: 1,
                 accessRoleName: 'SYSDBA',
                 accessRoleFullName: "Системный администратор"
             }
