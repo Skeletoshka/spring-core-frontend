@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import { Button, Form, Input, Checkbox } from 'antd';
-import {Container, FormGroup, Label, Table} from 'reactstrap';
 import {requestToApi} from '../components/Request';
 import {useNavigate} from "react-router-dom";
 import '../App.css';
@@ -31,6 +30,7 @@ export default function Auth(){
                     if ([401, 403].includes(response.status)) {
                         throw 'Не удалось авторизоваться'
                     }
+                    throw 'Не удалось авторизоваться'
                 }else{
                     return response.json()
                 }
@@ -77,7 +77,7 @@ export default function Auth(){
                         </Form.Item>
                         <Form.Item>
                             <Button onClick={handleSubmit} className='enterButton'>Войти</Button>
-                            <Button onClick={handleSubmit} className='forgetButton'>Регистрация</Button>
+                            <Button onClick={() => {navigate("/registry")}} className='forgetButton'>Регистрация</Button>
                         </Form.Item>
                     </Form>
                 </div>

@@ -46,9 +46,34 @@
 .authFormInner {
   margin-left: auto;
   margin-right: auto;
-  width: 250px;
-  /* Whatever width you want */
+  width: 20%;
 }
+
+.registryFormOuter {
+  display: table;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image:url('./img/auth/фон_регистрации.png');
+  background-size: 100% 100%;
+  opacity: 0.8;
+}
+
+.registryFormMiddle{
+  height: 100%;
+  width: 20%;
+  margin-top: 0;
+  background-color: aliceblue;
+  margin-left: auto;
+  margin-right: auto;
+  display:b;
+}
+
+.registryFormInner {
+  padding-top: 60%;
+  width: 100%;
+}
+
 :root{
   background-color: white;
 }
