@@ -1,9 +1,9 @@
 import Auth from './pages/Auth';
-import Registry from './pages/Registry'
 import LK from './pages/LK';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import React, { Component } from 'react';
 import Header from './components/Header';
+import AccessRole from './pages/AccessRole';
 
 class App extends Component {
   render() {
@@ -15,8 +15,8 @@ class App extends Component {
             <BrowserRouter>
               <Routes>
                   <Route path='/' element={<Auth />} />
-                  <Route path='/registry' element={<Registry />} />
                   <Route path='/lk' element={<LK />} />
+                  <Route path='/roles' element={<AccessRole/>}/>
               </Routes>
             </BrowserRouter>
           </div>

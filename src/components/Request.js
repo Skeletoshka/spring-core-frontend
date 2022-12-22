@@ -17,7 +17,6 @@ export const requestToApi = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + tokenAccess.value}
             }
-            console.log(header, tokenAccess)
         return fetch('http://localhost:8090' + url, {
             method: 'POST',
             headers: header,
