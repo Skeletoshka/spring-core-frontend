@@ -51,7 +51,6 @@ export default function Auth(){
             if(!response.ok){
                 throw response.message
             }else{
-                //navigate("/")
                 return response.json()
             }
         });
@@ -72,7 +71,7 @@ export default function Auth(){
                 }
             })
             .then(data => {
-                requestToApi.updateToken(data.accessToken)
+                requestToApi.updateToken(data.token)
                 navigate("/lk")
             });
     }
