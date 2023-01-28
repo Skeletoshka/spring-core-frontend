@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Button, Form, Input, Select, Modal } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Form, Input, Select, Modal, notification } from 'antd';
 import {requestToApi} from '../components/Request';
 import {useNavigate} from "react-router-dom";
 import '../App.css';
 
 
 export default function Auth(){
+
 
     const AuthEntity = {
         username:'',
@@ -20,59 +21,76 @@ export default function Auth(){
     }
 
     const [active, setActive] = useState(false)
-    const [roles, setRoles] = useState()
     const [roleList, setRoleList] = useState()
+    const [messageText, setMessageText] = useState()
 
     const navigate = useNavigate();
 
-    function fillRoles(){
-        requestToApi.post("/api/accessrole/getlist", {id: 1})
-        .then(response => {
-            if(!response.ok){
-                throw response.message
-            }else{
-                return response.json()
-            }
-        })
-        .then(data => {
-            setRoles(data);
+    const openNotification = () => {
+        notification.open({
+            message: 'Ошибка',
+            description: messageText,
+             onClick: () => {
+                console.log(messageText);
+            },
         });
-        setRoleList(roles?.map(role => {
-            return <Select.Option value={role.accessRoleId}>
-                {role.accessRoleFullName}
-            </Select.Option>
-        }))
-    }
+    };
+
+    useEffect(() => {
+        if(roleList === undefined){
+            requestToApi.post("/api/accessrole/getlist", {id: 1})
+            .then(response => {
+                if(!response.ok){
+                    setMessageText(response.message)
+                    openNotification()
+                }else{
+                    return response.json()
+                }
+            })
+            .then(data => {
+                setRoleList(data?.map(role => {
+                    return <Select.Option value={role.accessRoleId}>
+                        {role.accessRoleFullName}
+                    </Select.Option>
+                }))
+            });
+        }
+    });
 
     function submit(){
         console.log(RegistryEntity)
         requestToApi.post("/api/auth/signup", RegistryEntity)
         .then(response => {
             if(!response.ok){
-                throw response.message
+                console.log(response)
+                setMessageText(response.message)
+                openNotification()
             }else{
                 return response.json()
             }
         });
         setActive(false)
     }
+    //fillRoles()
 
     async function handleSubmit(event){
         event.preventDefault();
         requestToApi.post('/api/auth/signin', AuthEntity)
             .then(response => {
-                if(!response.ok){
-                    if ([401, 403].includes(response.status)) {
-                        throw 'Не удалось авторизоваться'
-                    }
-                    throw 'Не удалось авторизоваться'
+                setMessageText('Не удалось авторизоваться')
+                openNotification()
+                var json = response.json()
+                console.log(json)
+                if(json.message === 'Bad credentials'){
+                    setMessageText('Не удалось авторизоваться')
+                    openNotification()
                 }else{
-                    return response.json()
+                    return json
                 }
             })
             .then(data => {
                 requestToApi.updateToken(data.token)
-                navigate("/lk")
+                //navigate("/lk")
             });
     }
 
@@ -105,7 +123,7 @@ export default function Auth(){
                                     accessRoleName:""
                                 })
                                 console.log(RegistryEntity.role)
-                            }} onClick={fillRoles}>
+                            }}>
                                 {roleList}
                             </Select>
                         </Form.Item >
