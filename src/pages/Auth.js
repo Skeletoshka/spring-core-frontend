@@ -20,13 +20,21 @@ export default function Auth(){
         role: []
     }
 
+    const GridDataOption = {
+        //namedFilters:{},
+        rowCount:10,
+        page:1,
+        orderBy:'accessRoleId',
+        from:'accessRole'
+    }
+
     const [active, setActive] = useState(false)
     const [roleList, setRoleList] = useState()
-    const [messageText, setMessageText] = useState()
+    //const [messageText, setMessageText] = useState()
 
     const navigate = useNavigate();
 
-    const openNotification = () => {
+    const openNotification = (messageText) => {
         notification.open({
             message: 'Ошибка',
             description: messageText,
@@ -38,11 +46,10 @@ export default function Auth(){
 
     useEffect(() => {
         if(roleList === undefined){
-            requestToApi.post("/api/accessrole/getlist", {id: 1})
+            requestToApi.post("/security/v1/apps/auth/getroles", GridDataOption)
             .then(response => {
                 if(!response.ok){
-                    setMessageText(response.message)
-                    openNotification()
+                    openNotification("Ошибка получения данных с сервера")
                 }else{
                     return response.json()
                 }
@@ -59,39 +66,39 @@ export default function Auth(){
 
     function submit(){
         console.log(RegistryEntity)
-        requestToApi.post("/api/auth/signup", RegistryEntity)
+        requestToApi.post("/security/v1/apps/auth/signup", RegistryEntity)
         .then(response => {
             if(!response.ok){
                 console.log(response)
-                setMessageText(response.message)
-                openNotification()
+                openNotification(response.message)
             }else{
                 return response.json()
             }
         });
         setActive(false)
     }
-    //fillRoles()
 
     async function handleSubmit(event){
         event.preventDefault();
-        requestToApi.post('/api/auth/signin', AuthEntity)
+        requestToApi.post('/security/v1/apps/auth/signin', AuthEntity)
             .then(response => {
-                setMessageText('Не удалось авторизоваться')
-                openNotification()
                 var json = response.json()
                 console.log(json)
-                if(json.message === 'Bad credentials'){
-                    setMessageText('Не удалось авторизоваться')
-                    openNotification()
+                if(json.message === 'Bad credentials' || !response.ok){
+                    openNotification('Не удалось авторизоваться')
                 }else{
                     return json
                 }
             })
             .then(data => {
-                requestToApi.updateToken(data.token)
-                //navigate("/lk")
+                if(data.token !== undefined){
+                    requestToApi.updateToken(data.token)
+                    navigate("/lk")
+                }else{
+                    openNotification('Не удалось авторизоваться')
+                }
             });
+            AuthEntity = undefined
     }
 
     function cancel(){
