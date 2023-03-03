@@ -93,3 +93,10 @@
 .message-error{
   margin-right: 0;
 }
+
+.navig_rol{
+  position: relative;
+  left: 78%;
+  top: 5px;
+
+}

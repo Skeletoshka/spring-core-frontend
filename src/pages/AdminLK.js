@@ -31,6 +31,7 @@ export default function AdminLK(){
         <div>
             <h1>Личный кабинет админа</h1>
             <Button onClick={() =>navigate("/lk/proguser")}>Пользователи</Button>
+            <Button onClick={() =>navigate("/roles")}>Роли</Button>
         </div>
     )
 }
