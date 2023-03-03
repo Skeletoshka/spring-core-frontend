@@ -30,7 +30,6 @@ export default function Auth(){
 
     const [active, setActive] = useState(false)
     const [roleList, setRoleList] = useState()
-    //const [messageText, setMessageText] = useState()
 
     const navigate = useNavigate();
 
@@ -83,7 +82,7 @@ export default function Auth(){
         requestToApi.post('/security/v1/apps/auth/signin', AuthEntity)
             .then(response => {
                 var json = response.json()
-                console.log(json)
+                console.log(JSON.stringify(json))
                 if(json.message === 'Bad credentials' || !response.ok){
                     openNotification('Не удалось авторизоваться')
                 }else{
@@ -92,13 +91,12 @@ export default function Auth(){
             })
             .then(data => {
                 if(data.token !== undefined){
-                    requestToApi.updateToken(data.token)
+                    requestToApi.updateUserDetails(data)
                     navigate("/lk")
                 }else{
                     openNotification('Не удалось авторизоваться')
                 }
             });
-            AuthEntity = undefined
     }
 
     function cancel(){

@@ -1,12 +1,15 @@
-const tokenAccess = {
-    value: ""
-};
+const userDetails = {
+    tokenAccess: "",
+    userName: "",
+    roles: []
+}
 
 export const requestToApi = {
 
     post: (url, body) => {
         var header = {};
-        if(tokenAccess.value==="" || tokenAccess.value === undefined) {
+        console.log(JSON.stringify(userDetails))
+        if(userDetails.tokenAccess==="" || userDetails.tokenAccess === undefined) {
             header = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'}
@@ -15,20 +18,23 @@ export const requestToApi = {
             header = {
                 'Accept': 'application/json' ,
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + tokenAccess.value}
+                'Authorization': 'Bearer ' + userDetails.tokenAccess}
             }
-        return fetch('http://193.168.49.7:8080' + url, {
+        return fetch('http://localhost:8080' + url, {
             method: 'POST',
             headers: header,
             body: JSON.stringify(body)
         });
     },
 
-    updateToken: (token) => {
-        tokenAccess.value = token
+    updateUserDetails: (data) => {
+        userDetails.tokenAccess = data.token
+        userDetails.userName = data.username
+        userDetails.roles = data.roles
+        console.log(JSON.stringify(userDetails))
     },
 
-    getToken: () => {
-        console.log(tokenAccess.value)
+    getUserDetails: () => {
+        return userDetails
     }
 }
