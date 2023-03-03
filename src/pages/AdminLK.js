@@ -1,4 +1,6 @@
+import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
+import {useNavigate} from "react-router-dom";
 import { requestToApi } from "../components/Request"
 
 export default function AdminLK(){
@@ -8,6 +10,8 @@ export default function AdminLK(){
         orderBy:'accessRoleId',
         from:'accessRole'
     }
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
@@ -26,6 +30,7 @@ export default function AdminLK(){
     return(
         <div>
             <h1>Личный кабинет админа</h1>
+            <Button onClick={() =>navigate("/lk/proguser")}>Пользователи</Button>
         </div>
     )
 }

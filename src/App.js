@@ -4,6 +4,7 @@ import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import React, { Component } from 'react';
 import Header from './components/Header';
 import AccessRole from './pages/AccessRole';
+import Proguser from './pages/Proguser';
 
 class App extends Component {
   render() {
@@ -17,6 +18,7 @@ class App extends Component {
                   <Route path='/' element={<Auth />} />
                   <Route path='/lk' element={<LK />} />
                   <Route path='/roles' element={<AccessRole/>}/>
+                  <Route path='/lk/proguser' element={<Proguser/>}/>
               </Routes>
             </BrowserRouter>
           </div>
