@@ -19,7 +19,7 @@ export const requestToApi = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + userDetails.tokenAccess}
             }
-        return fetch('http://localhost:8080' + url, {
+        return fetch('http://193.168.49.7:8080' + url, {
             method: 'POST',
             headers: header,
             body: JSON.stringify(body)
