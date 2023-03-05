@@ -1,4 +1,4 @@
-import { Button, Modal, Table, Form, Input } from 'antd';
+import { Button, Modal, Table, Form, Input, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
@@ -39,6 +39,7 @@ export default function Proguser(){
     const [proguser, setProgUser] = useState()
     const [show, setShow] = useState(false)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [accessRoleList, setAccessRoleList] = useState([])
     const [form] = useForm()
 
     const onSelectChange = (newSelectedRowKeys) => {
@@ -84,17 +85,26 @@ export default function Proguser(){
 
     function add(){
         requestToApi.post("/v1/apps/objects/proguser/get", null)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
-            .then(data => {
-                setProgUser(data)
-                setShow(true)
-            });
+        .then(response => {
+            if(!response.ok){
+                alert(response.message)
+            }else{
+                return response.json()
+            }
+        })
+        .then(data => {
+            setProgUser(data)
+            setShow(true)
+        });
+        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+        .then(response => {
+            if(!response.ok){
+                alert(response.message)
+            }else{
+                return response.json()
+            }
+        })
+        .then(data => setAccessRoleList(data));
         setTimeout(() => {
             form.resetFields() 
         }, 50);
@@ -113,6 +123,15 @@ export default function Proguser(){
                 setProgUser(data) 
                 setShow(true)
             });
+            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+        .then(response => {
+            if(!response.ok){
+                alert(response.message)
+            }else{
+                return response.json()
+            }
+        })
+        .then(data => setAccessRoleList(data));
             setTimeout(() => {
                 form.resetFields() 
             }, 50);
@@ -146,6 +165,14 @@ export default function Proguser(){
         setTimeout(() => {
             reload()
         }, 50);
+    }
+    
+    function changeRoles(value){
+        proguser.accessRoleViews=value?.map(val => {
+            return {
+                accessRoleId: val
+            }
+        })
     }
 
     return(
@@ -224,6 +251,33 @@ export default function Proguser(){
                                 <Input name="progUserActive" onChange={(event) => {
                                 proguser.progUserActive = event.target.value
                             }} placeholder="Активность пользователя" value={proguser===undefined?'':proguser.progUserActive}/>
+                        </Form.Item>
+                        <Form.Item
+                            name="progUserRoles"
+                            label="Роли пользователя"
+                            rules={[
+                                {
+                                    required: true,
+                                    message : "Роли пользователя не может быть пустыми"
+                                }
+                            ]}>
+                            <Select
+                                mode="multiple"
+                                style={{ width: '100%' }}
+                                defaultValue={proguser===undefined?[]:proguser.accessRoleViews.map((accessrole) => {
+                                    return {
+                                        label: accessrole.accessRoleName,
+                                        value: accessrole.accessRoleId
+                                    }
+                                })}
+                                options={accessRoleList.map((accessrole) => {
+                                    return {
+                                        label: accessrole.accessRoleName,
+                                        value: accessrole.accessRoleId
+                                    }
+                                })}
+                                onChange={changeRoles}
+                            />
                         </Form.Item>
                 </Form>
             </Modal>
