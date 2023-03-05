@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, Select, Modal, notification } from 'antd';
+import { Button, Form, Input, Select, Modal } from 'antd';
 import {requestToApi} from '../components/Request';
 import {useNavigate} from "react-router-dom";
 import '../App.css';
@@ -33,26 +33,9 @@ export default function Auth(){
 
     const navigate = useNavigate();
 
-    const openNotification = (messageText) => {
-        notification.open({
-            message: 'Ошибка',
-            description: messageText,
-             onClick: () => {
-                console.log(messageText);
-            },
-        });
-    };
-
     useEffect(() => {
         if(roleList === undefined){
             requestToApi.post("/security/v1/apps/auth/getroles", GridDataOption)
-            .then(response => {
-                if(!response.ok){
-                    openNotification("Ошибка получения данных с сервера")
-                }else{
-                    return response.json()
-                }
-            })
             .then(data => {
                 setRoleList(data?.map(role => {
                     return <Select.Option value={role.accessRoleId}>
@@ -66,35 +49,16 @@ export default function Auth(){
     function submit(){
         console.log(RegistryEntity)
         requestToApi.post("/security/v1/apps/auth/signup", RegistryEntity)
-        .then(response => {
-            if(!response.ok){
-                console.log(response)
-                openNotification(response.message)
-            }else{
-                return response.json()
-            }
-        });
         setActive(false)
     }
 
     async function handleSubmit(event){
         event.preventDefault();
         requestToApi.post('/security/v1/apps/auth/signin', AuthEntity)
-            .then(response => {
-                var json = response.json()
-                console.log(JSON.stringify(json))
-                if(json.message === 'Bad credentials' || !response.ok){
-                    openNotification('Не удалось авторизоваться')
-                }else{
-                    return json
-                }
-            })
             .then(data => {
                 if(data.token !== undefined){
                     requestToApi.updateUserDetails(data)
                     navigate("/lk")
-                }else{
-                    openNotification('Не удалось авторизоваться')
                 }
             });
     }

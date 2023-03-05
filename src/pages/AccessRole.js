@@ -49,38 +49,17 @@ export default function AccessRole(){
     useEffect(() => {
         if(accessRoleList===undefined){
             requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
             .then(data => setAccessRoleList(data));
         }
     })
 
     function reload(){
         requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
             .then(data => setAccessRoleList(data));
     }
 
     function add(){
         requestToApi.post("/v1/apps/refbooks/accessrole/get", null)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
             .then(data => {
                 setAccessRole(data)
                 setShow(true)
@@ -92,13 +71,6 @@ export default function AccessRole(){
 
     function edit(id){
         requestToApi.post("/v1/apps/refbooks/accessrole/get", id)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
             .then(data => {
                 setAccessRole(data) 
                 setShow(true)
@@ -110,13 +82,6 @@ export default function AccessRole(){
 
     function submit(){
         requestToApi.post("/v1/apps/refbooks/accessrole/save", accessRole)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
         setTimeout(() => {
             reload()
         }, 500);
@@ -126,13 +91,6 @@ export default function AccessRole(){
 
     function deleteRows(){
         requestToApi.post("/v1/apps/refbooks/accessrole/delete", selectedRowKeys)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
         setTimeout(() => {
             reload()
         }, 50);

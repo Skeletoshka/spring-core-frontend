@@ -15,13 +15,6 @@ export default function AdminLK(){
 
     useEffect(() => {
         requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
         .then(data => {
             console.log(JSON.stringify(data))
         });

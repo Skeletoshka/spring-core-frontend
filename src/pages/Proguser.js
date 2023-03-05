@@ -60,50 +60,22 @@ export default function Proguser(){
     useEffect(() => {
         if(progUserList===undefined){
             requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
             .then(data => setProgUserList(data));
         }
     })
 
     function reload(){
         requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
             .then(data => setProgUserList(data));
     }
 
     function add(){
         requestToApi.post("/v1/apps/objects/proguser/get", null)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
         .then(data => {
             setProgUser(data)
             setShow(true)
         });
         requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
         .then(data => setAccessRoleList(data));
         setTimeout(() => {
             form.resetFields() 
@@ -112,40 +84,19 @@ export default function Proguser(){
 
     function edit(id){
         requestToApi.post("/v1/apps/objects/proguser/get", id)
-            .then(response => {
-                if(!response.ok){
-                    alert(response.message)
-                }else{
-                    return response.json()
-                }
-            })
-            .then(data => {
-                setProgUser(data) 
-                setShow(true)
-            });
-            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
+        .then(data => {
+            setProgUser(data) 
+            setShow(true)
+        });
+        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
         .then(data => setAccessRoleList(data));
-            setTimeout(() => {
-                form.resetFields() 
-            }, 50);
+        setTimeout(() => {
+            form.resetFields() 
+        }, 50);
     }
 
     function submit(){
         requestToApi.post("/v1/apps/objects/proguser/save", proguser)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
         setTimeout(() => {
             reload()
         }, 500);
@@ -155,13 +106,6 @@ export default function Proguser(){
 
     function deleteRows(){
         requestToApi.post("/v1/apps/objects/proguser/delete", selectedRowKeys)
-        .then(response => {
-            if(!response.ok){
-                alert(response.message)
-            }else{
-                return response.json()
-            }
-        })
         setTimeout(() => {
             reload()
         }, 50);
@@ -264,7 +208,7 @@ export default function Proguser(){
                             <Select
                                 mode="multiple"
                                 style={{ width: '100%' }}
-                                defaultValue={proguser===undefined?[]:proguser.accessRoleViews.map((accessrole) => {
+                                defaultValue={proguser===undefined?[]:proguser.accessRoleViews?.map((accessrole) => {
                                     return {
                                         label: accessrole.accessRoleName,
                                         value: accessrole.accessRoleId
