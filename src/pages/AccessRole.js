@@ -1,84 +1,214 @@
-import {Button, Form, Input, Checkbox,Select,Menu,Table } from 'antd';
-import { Container } from 'reactstrap';
-import {requestToApi} from '../components/Request';
+import { Button, Modal, Table, Form, Input } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
-import {useNavigate} from "react-router-dom";
+import {requestToApi} from '../components/Request';
 
+const columns = [
+    {
+        title:'Имя роли',
+        dataIndex:'accessRoleName',
+        key:'accessRoleName'
+    },
+    {
+        title:'Имя роли',
+        dataIndex:'accessRoleFullName',
+        key:'accessRoleFullName'
+    }
+]
+
+const GridDataOption = {
+    rowCount:10,
+    page:1,
+    orderBy:'accessrole_id',
+    from:'accessrole'
+}
 
 export default function AccessRole(){
 
-    const columns = [   
+    const [accessRoleList, setAccessRoleList] = useState()
+    const [accessRole, setAccessRole] = useState()
+    const [show, setShow] = useState(false)
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [form] = useForm()
 
-        {
-            title: 'Роль',
-            dataIndex: 'accessRoleName',
-            key: 'accessRoleName',
-        },
-        {
-            title: 'Польное название роли',
-            dataIndex: 'accessRoleFullName',
-            key: 'accessRoleFullName',
-        },
-    ]
-
-    const onChange = (e) => {
-        console.log('Change:', e.target.value);
-      };
-
-    const [active, setActive] = useState(false)
-    const [roleList, setRoleList] = useState()
+    const onSelectChange = (newSelectedRowKeys) => {
+        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+        setSelectedRowKeys(newSelectedRowKeys);
+    };
     
-    const GridDataOption = {
-        //namedFilters:{},
-        rowCount:10,
-        page:1,
-        orderBy:'accessRoleId',
-        from:'accessRole'
+    const rowSelection = {
+        selectedRowKeys,
+        onChange:onSelectChange
+    };
+
+    function cancel(){
+        setShow(false)
+        setAccessRole(undefined)
     }
 
-
     useEffect(() => {
-        if(roleList === undefined){
+        if(accessRoleList===undefined){
             requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
             .then(response => {
                 if(!response.ok){
-                    alert("Ошибка получения данных с сервера")
+                    alert(response.message)
+                }else{
+                    return response.json()
+                }
+            })
+            .then(data => setAccessRoleList(data));
+        }
+    })
+
+    function reload(){
+        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+            .then(response => {
+                if(!response.ok){
+                    alert(response.message)
+                }else{
+                    return response.json()
+                }
+            })
+            .then(data => setAccessRoleList(data));
+    }
+
+    function add(){
+        requestToApi.post("/v1/apps/refbooks/accessrole/get", null)
+            .then(response => {
+                if(!response.ok){
+                    alert(response.message)
                 }else{
                     return response.json()
                 }
             })
             .then(data => {
-                setRoleList(data)
+                setAccessRole(data)
+                setShow(true)
             });
-        }
-    });
+        setTimeout(() => {
+            form.resetFields() 
+        }, 50);
+    }
 
-   
-    
+    function edit(id){
+        requestToApi.post("/v1/apps/refbooks/accessrole/get", id)
+            .then(response => {
+                if(!response.ok){
+                    alert(response.message)
+                }else{
+                    return response.json()
+                }
+            })
+            .then(data => {
+                setAccessRole(data) 
+                setShow(true)
+            });
+            setTimeout(() => {
+                form.resetFields() 
+            }, 50);
+    }
 
+    function submit(){
+        requestToApi.post("/v1/apps/refbooks/accessrole/save", accessRole)
+        .then(response => {
+            if(!response.ok){
+                alert(response.message)
+            }else{
+                return response.json()
+            }
+        })
+        setTimeout(() => {
+            reload()
+        }, 500);
+        setShow(false)
+        setAccessRole(undefined)
+    }
+
+    function deleteRows(){
+        requestToApi.post("/v1/apps/refbooks/accessrole/delete", selectedRowKeys)
+        .then(response => {
+            if(!response.ok){
+                alert(response.message)
+            }else{
+                return response.json()
+            }
+        })
+        setTimeout(() => {
+            reload()
+        }, 50);
+    }
 
     return(
         <div>
-            <h1>Роли пользователя</h1>
-            <header>
-						{/* Кнопки навигации */}
-                      
-                        <ul className="navig_rol">
-                 		<Form.Item>
-                            <Button onClick={onChange}>Удалить</Button>
-                            <Button onClick={onChange}>Отправить</Button>
-                            <Button onClick={onChange}>Обновить</Button>
-                            <Button onClick={onChange}>Добавить</Button>
-                        </Form.Item>
-												
-						 </ul>
-                        					
-            </header>
-        
-            <div className='table'>
-                <Table dataSource={roleList} columns={columns} />;
+            <div>
+                <h1>Роли</h1>
+                <div style={{position: 'relative', left:'85%' }}>
+                    <Button onClick={deleteRows}>Удалить</Button>
+                    <Button onClick={reload}>Обновить</Button>
+                    <Button onClick={add}>Добавить</Button>
+                </div>
             </div>
-
+            <Modal open = {show}
+            title="Изменение роли" 
+            onCancel={cancel}
+            footer={[
+                <Button onClick={submit}>
+                    Добавить
+                </Button>,
+                <Button onClick={cancel}>
+                    Назад
+                </Button>
+            ]}>
+                <Form
+                    form={form}
+                    layout={"vertical"}
+                    initialValues={accessRole}
+                    name="formRegistry"
+                    style={{ padding: 20 }}>
+                        <Form.Item
+                            name="accessRoleName"
+                            label="Имя роли"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Имя роли не может быть пустым"
+                                }
+                            ]}>
+                            <Input name="accessRoleName" 
+                            onChange={(event) => {
+                                accessRole.accessRoleName = event.target.value
+                            }}
+                            placeholder="Имя роли" 
+                            value={accessRole===undefined?'':accessRole.accessRoleName}/>
+                        </Form.Item>
+                        <Form.Item
+                            name="accessRoleFullName"
+                            label="Полное имя роли"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Полное имя роли не может быть пустым"
+                                }
+                            ]}>
+                            <Input name="accessRoleFullName" 
+                            onChange={(event) => {
+                                accessRole.accessRoleFullName = event.target.value
+                            }}
+                            placeholder="Полное имя роли" 
+                            value={accessRole===undefined?'':accessRole.accessRoleFullName}/>
+                        </Form.Item>
+                </Form>
+            </Modal>
+            <Table 
+                dataSource={accessRoleList} 
+                columns={columns}
+                rowSelection={rowSelection}
+                rowKey={(record) => record.accessRoleId}
+                onRow={(record) => ({
+                    onClick: () => {
+                        edit(record.accessRoleId) 
+                    },
+                })}/>
         </div>
     )
 }

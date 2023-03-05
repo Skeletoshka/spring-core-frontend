@@ -110,9 +110,7 @@ export default function Proguser(){
                 }
             })
             .then(data => {
-                console.log(data)
                 setProgUser(data) 
-                console.log(proguser)
                 setShow(true)
             });
             setTimeout(() => {
