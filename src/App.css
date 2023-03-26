@@ -100,3 +100,10 @@
   top: 5px;
 
 }
+
+.personInfo{
+  border-radius: 10px;
+  background-color: darkgray;
+  width:60%;
+  text-align: center;
+}

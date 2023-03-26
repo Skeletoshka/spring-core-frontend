@@ -53,6 +53,7 @@ export default function Auth(){
     }
 
     async function handleSubmit(event){
+        requestToApi.updateUserDetails(undefined)
         event.preventDefault();
         requestToApi.post('/security/v1/apps/auth/signin', AuthEntity)
             .then(data => {

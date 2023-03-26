@@ -1,6 +1,7 @@
 import { notification } from "antd";
 
 const userDetails = {
+    progUserId:0,
     tokenAccess: "",
     userName: "",
     roles: []
@@ -45,10 +46,14 @@ export const requestToApi = {
     },
 
     updateUserDetails: (data) => {
-        userDetails.tokenAccess = data.token
-        userDetails.userName = data.username
-        userDetails.roles = data.roles
-        console.log(JSON.stringify(userDetails))
+        if(data != undefined){
+            userDetails.tokenAccess = data.token
+            userDetails.userName = data.username
+            userDetails.roles = data.roles
+            userDetails.progUserId = data.id
+        }else{
+            userDetails.tokenAccess = ""
+        }
     },
 
     getUserDetails: () => {

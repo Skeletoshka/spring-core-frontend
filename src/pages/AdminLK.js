@@ -2,6 +2,7 @@ import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import {useNavigate} from "react-router-dom";
 import { requestToApi } from "../components/Request"
+import LK_Info from '../components/LK_info';
 
 export default function AdminLK(){
     const GridDataOption = {
@@ -23,6 +24,7 @@ export default function AdminLK(){
     return(
         <div>
             <h1>Личный кабинет админа</h1>
+            <LK_Info peopleName={"ТУДЫ"} peopleLastName={"Сюды"}/>
             <Button onClick={() =>navigate("/lk/controlobject")}>Права</Button>
             <Button onClick={() =>navigate("/lk/proguser")}>Пользователи</Button>
             <Button onClick={() =>navigate("/roles")}>Роли</Button>

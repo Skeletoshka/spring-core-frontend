@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {requestToApi} from '../components/Request';
 import '../App.css';
 import AdminLK from './AdminLK';
