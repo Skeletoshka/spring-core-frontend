@@ -29,7 +29,7 @@ const columns = [
 const GridDataOption = {
     rowCount:10,
     page:1,
-    orderBy:'proguser_id',
+    orderBy:'progUserId',
     from:'proguser'
 }
 

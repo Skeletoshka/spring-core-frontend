@@ -19,7 +19,7 @@ const columns = [
 const GridDataOption = {
     rowCount:10,
     page:1,
-    orderBy:'accessrole_id',
+    orderBy:'accessRoleId',
     from:'accessrole'
 }
 

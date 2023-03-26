@@ -6,6 +6,7 @@ import Header from './components/Header';
 import AccessRole from './pages/AccessRole';
 import Proguser from './pages/Proguser';
 import ControlObject from './pages/ControlObject';
+import StudyProgram from './pages/StudyProgram';
 
 class App extends Component {
   render() {
@@ -22,6 +23,7 @@ class App extends Component {
                   <Route path='/roles' element={<AccessRole/>}/>
                   <Route path='/lk/proguser' element={<Proguser/>}/>
                   <Route path='/lk/controlobject' element={<ControlObject/>}/>
+                  <Route path='/lk/studyprogram' element={<StudyProgram/>}/>
               </Routes>
             </BrowserRouter>
           </div>

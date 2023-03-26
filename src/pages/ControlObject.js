@@ -15,7 +15,6 @@ const columns = [
         key:'accessFlag',
         render: (accessFlag) => {
             if (accessFlag===1){
-                console.log(accessFlag)
                 return <span><CheckOutlined/></span>
             }
         }
@@ -31,8 +30,16 @@ const GridDataOption = {
     namedFilters:[],
     rowCount:10,
     page:1,
-    orderBy:'controlobject_id',
+    orderBy:'controlObjectUrl',
     from:'controlobject'
+}
+
+const GridDataOptionRole = {
+    namedFilters:[],
+    rowCount:10,
+    page:1,
+    orderBy:'accessRoleId',
+    from:'accessRole'
 }
 
 export default function ControlObject(){
@@ -64,7 +71,7 @@ export default function ControlObject(){
             .then(data => setControlObjectList(data));
         }
         if(accessRoleList.length===0){
-            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOptionRole)
             .then(data => setAccessRoleList(data));
         }
     })
@@ -72,7 +79,7 @@ export default function ControlObject(){
     function reload(){
         requestToApi.post("/v1/apps/refbooks/controlobject/getlist", GridDataOption)
             .then(data => setControlObjectList(data));
-        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOptionRole)
             .then(data => setAccessRoleList(data));
     }
 
