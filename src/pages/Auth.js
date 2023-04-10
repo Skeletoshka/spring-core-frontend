@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, Select, Modal } from 'antd';
 import {requestToApi} from '../components/Request';
 import {useNavigate} from "react-router-dom";
+import { useForm } from 'antd/es/form/Form';
 import '../App.css';
 
 
@@ -30,10 +31,12 @@ export default function Auth(){
 
     const [active, setActive] = useState(false)
     const [roleList, setRoleList] = useState()
+    const [form] = useForm();
 
     const navigate = useNavigate();
 
     useEffect(() => {
+        requestToApi.getUserDetails().tokenAccess = undefined
         if(roleList === undefined){
             requestToApi.post("/security/v1/apps/auth/getroles", GridDataOption)
             .then(data => {
@@ -47,21 +50,24 @@ export default function Auth(){
     });
 
     function submit(){
-        console.log(RegistryEntity)
+        form.validateFields().then(value => {
+            console.log(value)
+        })
         requestToApi.post("/security/v1/apps/auth/signup", RegistryEntity)
         setActive(false)
     }
 
     async function handleSubmit(event){
         requestToApi.updateUserDetails(undefined)
-        event.preventDefault();
-        requestToApi.post('/security/v1/apps/auth/signin', AuthEntity)
-            .then(data => {
-                if(data.token !== undefined){
-                    requestToApi.updateUserDetails(data)
-                    navigate("/lk")
-                }
-            });
+        form.validateFields().then((values) => {
+            requestToApi.post('/security/v1/apps/auth/signin', values)
+                .then(data => {
+                    if(data.token !== undefined){
+                        requestToApi.updateUserDetails(data)
+                        navigate("/lk")
+                    }
+                });
+        })
     }
 
     function cancel(){
@@ -144,10 +150,11 @@ export default function Auth(){
                     <Form
                         layout={"vertical"}            
                         name="formLogin"
+                        form={form}
                         style={{ padding: 20 }}>
 
                         <Form.Item
-                            name="userName"
+                            name="username"
                             label="Имя пользователя"
                             rules={[
                                 {
@@ -155,7 +162,7 @@ export default function Auth(){
                                     message: "Имя пользователя не может быть пустым"
                                 }
                             ]}>
-                            <Input name="userName" onChange={(event) => {AuthEntity.username = event.target.value}} placeholder="Login"/>
+                            <Input name="username" placeholder="Login"/>
                         </Form.Item>
 
                         <Form.Item
@@ -168,7 +175,7 @@ export default function Auth(){
                                 }
                             ]}
                         >
-                            <Input.Password name="password" onChange={(event) => {AuthEntity.password = event.target.value}} placeholder="Password"/>
+                            <Input.Password name="password" placeholder="Password"/>
                         </Form.Item>
                         <Form.Item>
                             <Button onClick={handleSubmit} className='enterButton'>Войти</Button>

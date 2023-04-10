@@ -2,6 +2,7 @@ import { Button, Modal, Table, Form, Input, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
+import PageHeader from "../components/PageHeader";
 
 const columns = [
     {
@@ -65,6 +66,7 @@ export default function StudyProgram(){
     const [teacherList, setTeacherList] = useState([])
     const [studyProgram, setStudyProgram] = useState()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [loading, setLoading] = useState(true)
     const [show, setShow] = useState(false)
     const [form] = useForm()
 
@@ -79,21 +81,21 @@ export default function StudyProgram(){
     };
 
     useEffect(() => {
-        if(studyProgramList===undefined){
-            requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", GridDataOption)
-            .then(data => setStudyProgramList(data));
-        }
-    })
-
-    function reload(){
         requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", GridDataOption)
             .then(data => setStudyProgramList(data));
         requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionTeacher)
             .then(data => setTeacherList(data));
         requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionAssistant)
             .then(data => setAssistantList(data));
-            requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOptionAssistant)
-            .then(data => setDirectionList(data));
+        requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOptionAssistant)
+            .then(data => {
+                setDirectionList(data)
+                setLoading(false)
+            });
+    }, [loading])
+
+    function reload(){
+        setLoading(true)
     }
 
     function cancel(){
@@ -106,10 +108,8 @@ export default function StudyProgram(){
             .then(data => {
                 setStudyProgram(data)
                 setShow(true)
+                form.resetFields()
             });
-        setTimeout(() => {
-            form.resetFields() 
-        }, 50);
     } 
 
     function edit(id){
@@ -117,38 +117,40 @@ export default function StudyProgram(){
             .then(data => {
                 setStudyProgram(data) 
                 setShow(true)
+                form.resetFields()
             });
-            setTimeout(() => {
-                form.resetFields() 
-            }, 50);
     }
 
     function submit(){
-        requestToApi.post("/v1/apps/dnk/objects/studyprogram/save", studyProgram)
-        setTimeout(() => {
-            reload()
-        }, 500);
-        setShow(false)
-        setStudyProgram(undefined)
+        form.validateFields().then((values) => {
+            requestToApi.post("/v1/apps/dnk/objects/studyprogram/save", values)
+                .then(data => {
+                    reload()
+                    setShow(false)
+                    setStudyProgram(undefined)
+                })
+        })
     }
 
     function deleteRows(){
         requestToApi.post("/v1/apps/dnk/objects/studyprogram/delete", selectedRowKeys)
-        setTimeout(() => {
-            reload()
-        }, 50);
+            .then(data => {
+                reload()
+            })
     }
+
+    let buttons = [
+        <Button onClick={deleteRows}>Удалить</Button>,
+        <Button onClick={reload}>Обновить</Button>,
+        <Button onClick={add}>Добавить</Button>
+    ]
 
     return(
         <div>
-            <div>
-                <h1>Программы обучения</h1>
-                <div style={{position: 'relative', left:'85%' }}>
-                    <Button onClick={deleteRows}>Удалить</Button>
-                    <Button onClick={reload}>Обновить</Button>
-                    <Button onClick={add}>Добавить</Button>
-                </div>
-            </div>
+            <PageHeader
+                title={"Программы обучения"}
+                buttons={buttons}
+            />
             <Modal open = {show}
             title="Изменение программы обучения" 
             onCancel={cancel}
@@ -175,11 +177,8 @@ export default function StudyProgram(){
                                     message: "Название программы обучения не может быть пустым"
                                 }
                             ]}>
-                            <Input name="studyProgramName" 
-                            onChange={(event) => {
-                                studyProgram.studyProgramName = event.target.value
-                            }}
-                            placeholder="Название программы обучения" 
+                            <Input name="studyProgramName"
+                            placeholder="Название программы обучения"
                             value={studyProgram===undefined?'':studyProgram.studyProgramName}/>
                         </Form.Item>
                         <Form.Item
@@ -191,15 +190,12 @@ export default function StudyProgram(){
                                     message: "Номер документа с программой обучения не может быть пустым"
                                 }
                             ]}>
-                            <Input name="documentRealNumber" 
-                            onChange={(event) => {
-                                studyProgram.documentRealNumber = event.target.value
-                            }}
-                            placeholder="Номер документа с программой обучения" 
+                            <Input name="documentRealNumber"
+                            placeholder="Номер документа с программой обучения"
                             value={studyProgram===undefined?'':studyProgram.documentRealNumber}/>
                         </Form.Item>
                         <Form.Item
-                            name="direction"
+                            name="directionId"
                             label="Направление"
                             rules={[
                                 {
@@ -216,13 +212,10 @@ export default function StudyProgram(){
                                         value: direction.directionId
                                     }
                                 })}
-                                onChange={(value) => {
-                                    studyProgram.directionId = value
-                                }}
                             />
                         </Form.Item>
                         <Form.Item
-                            name="teacher"
+                            name="teacherId"
                             label="Преподаватель"
                             rules={[
                                 {
@@ -239,13 +232,10 @@ export default function StudyProgram(){
                                         value: people.peopleId
                                     }
                                 })}
-                                onChange={(value) => {
-                                    studyProgram.teacherId = value
-                                }}
                             />
                         </Form.Item>
                         <Form.Item
-                            name="assistant"
+                            name="assistantId"
                             label="Ассистент">
                             <Select
                                 style={{ width: '100%' }}
@@ -256,16 +246,14 @@ export default function StudyProgram(){
                                         value: people.peopleId
                                     }
                                 })}
-                                onChange={(value) => {
-                                    studyProgram.assistantId = value
-                                }}
                             />
                         </Form.Item>
                 </Form>
             </Modal>
             <Table 
-                dataSource={studyProgramList} 
+                dataSource={studyProgramList}
                 columns={columns}
+                loading={loading}
                 rowSelection={rowSelection}
                 rowKey={(record) => record.studyProgramId}
                 onRow={(record) => ({

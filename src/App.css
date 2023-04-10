@@ -5,8 +5,9 @@
   height: 100%;
   width: 100%;
   background-image:url('./img/auth/фон.png');
+  background-color: gainsboro ;
   background-size: 100% 100%;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .enterButton {
@@ -21,7 +22,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 5%;
+  height: 7%;
   width: 100%;
 }
 
@@ -35,8 +36,8 @@
 .body-div{
   display: table;
   position: absolute;
-  top: 5%;
-  height: 95%;
+  top: 7%;
+  height: 93%;
   width: 100%;
 }
 
@@ -68,7 +69,6 @@
   background-color: aliceblue;
   margin-left: auto;
   margin-right: auto;
-  display:b;
 }
 
 .registryFormInner {
@@ -106,4 +106,27 @@
   background-color: darkgray;
   width:60%;
   text-align: center;
+}
+
+.pageHeaderDiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px;
+  width: 97%;
+}
+
+.pageHeaderDivChild{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.titleH1{
+  font-size: 25px;
+  line-height: 30px;
+  padding-left: 20px;
+}
+.titleButtons{
+  float: left;
 }

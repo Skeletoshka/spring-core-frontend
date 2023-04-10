@@ -7,6 +7,8 @@ import AccessRole from './pages/AccessRole';
 import Proguser from './pages/Proguser';
 import ControlObject from './pages/ControlObject';
 import StudyProgram from './pages/StudyProgram';
+import Direction from './pages/Direction';
+import People from "./pages/People";
 
 class App extends Component {
   render() {
@@ -24,6 +26,8 @@ class App extends Component {
                   <Route path='/lk/proguser' element={<Proguser/>}/>
                   <Route path='/lk/controlobject' element={<ControlObject/>}/>
                   <Route path='/lk/studyprogram' element={<StudyProgram/>}/>
+                  <Route path='/lk/direction' element={<Direction/>}/>
+                  <Route path='/lk/people' element={<People/>}/>
               </Routes>
             </BrowserRouter>
           </div>

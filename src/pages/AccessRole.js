@@ -2,6 +2,7 @@ import { Button, Modal, Table, Form, Input } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
+import PageHeader from "../components/PageHeader";
 
 const columns = [
     {
@@ -25,10 +26,11 @@ const GridDataOption = {
 
 export default function AccessRole(){
 
-    const [accessRoleList, setAccessRoleList] = useState()
-    const [accessRole, setAccessRole] = useState()
-    const [show, setShow] = useState(false)
+    const [accessRoleList, setAccessRoleList] = useState();
+    const [accessRole, setAccessRole] = useState();
+    const [show, setShow] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [form] = useForm()
 
     const onSelectChange = (newSelectedRowKeys) => {
@@ -47,15 +49,15 @@ export default function AccessRole(){
     }
 
     useEffect(() => {
-        if(accessRoleList===undefined){
-            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-            .then(data => setAccessRoleList(data));
-        }
-    })
+        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+            .then(data => {
+                setAccessRoleList(data)
+                setLoading(false)
+            });
+    }, [loading])
 
     function reload(){
-        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-            .then(data => setAccessRoleList(data));
+        setLoading(true)
     }
 
     function add(){
@@ -63,10 +65,8 @@ export default function AccessRole(){
             .then(data => {
                 setAccessRole(data)
                 setShow(true)
+                form.resetFields()
             });
-        setTimeout(() => {
-            form.resetFields() 
-        }, 50);
     }
 
     function edit(id){
@@ -74,38 +74,40 @@ export default function AccessRole(){
             .then(data => {
                 setAccessRole(data) 
                 setShow(true)
+                form.resetFields()
             });
-            setTimeout(() => {
-                form.resetFields() 
-            }, 50);
     }
 
     function submit(){
-        requestToApi.post("/v1/apps/refbooks/accessrole/save", accessRole)
-        setTimeout(() => {
-            reload()
-        }, 500);
-        setShow(false)
-        setAccessRole(undefined)
+        form.validateFields().then((values) => {
+            requestToApi.post("/v1/apps/refbooks/accessrole/save", values)
+                .then(data => {
+                    reload()
+                    setShow(false)
+                    setAccessRole(undefined)
+                })
+        })
     }
 
     function deleteRows(){
         requestToApi.post("/v1/apps/refbooks/accessrole/delete", selectedRowKeys)
-        setTimeout(() => {
-            reload()
-        }, 50);
+            .then(data => {
+                reload()
+            })
     }
+
+    let buttons = [
+        <Button onClick={deleteRows}>Удалить</Button>,
+        <Button onClick={reload}>Обновить</Button>,
+        <Button onClick={add}>Добавить</Button>
+    ]
 
     return(
         <div>
-            <div>
-                <h1>Роли</h1>
-                <div style={{position: 'relative', left:'85%' }}>
-                    <Button onClick={deleteRows}>Удалить</Button>
-                    <Button onClick={reload}>Обновить</Button>
-                    <Button onClick={add}>Добавить</Button>
-                </div>
-            </div>
+            <PageHeader
+                title={"Роли"}
+                buttons={buttons}
+            />
             <Modal open = {show}
             title="Изменение роли" 
             onCancel={cancel}
@@ -132,10 +134,7 @@ export default function AccessRole(){
                                     message: "Имя роли не может быть пустым"
                                 }
                             ]}>
-                            <Input name="accessRoleName" 
-                            onChange={(event) => {
-                                accessRole.accessRoleName = event.target.value
-                            }}
+                            <Input name="accessRoleName"
                             placeholder="Имя роли" 
                             value={accessRole===undefined?'':accessRole.accessRoleName}/>
                         </Form.Item>
@@ -148,10 +147,7 @@ export default function AccessRole(){
                                     message: "Полное имя роли не может быть пустым"
                                 }
                             ]}>
-                            <Input name="accessRoleFullName" 
-                            onChange={(event) => {
-                                accessRole.accessRoleFullName = event.target.value
-                            }}
+                            <Input name="accessRoleFullName"
                             placeholder="Полное имя роли" 
                             value={accessRole===undefined?'':accessRole.accessRoleFullName}/>
                         </Form.Item>
@@ -160,6 +156,7 @@ export default function AccessRole(){
             <Table 
                 dataSource={accessRoleList} 
                 columns={columns}
+                loading={loading}
                 rowSelection={rowSelection}
                 rowKey={(record) => record.accessRoleId}
                 onRow={(record) => ({

@@ -1,7 +1,8 @@
-import { Button, Modal, Table, Form, Input, Select } from 'antd';
+import { Button, Table, Select } from 'antd';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import {CheckOutlined} from '@ant-design/icons'
+import PageHeader from "../components/PageHeader";
 
 const columns = [
     {
@@ -45,8 +46,6 @@ const GridDataOptionRole = {
 export default function ControlObject(){
     const [controlObjectList, setControlObjectList] = useState()
     const [accessRoleId, setAccessRoleId] = useState()
-    const [controlObject, setControlObject] = useState()
-    const [show, setShow] = useState(false)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [accessRoleList, setAccessRoleList] = useState([])
 
@@ -59,11 +58,6 @@ export default function ControlObject(){
         selectedRowKeys,
         onChange:onSelectChange
     };
-
-    function cancel(){
-        setShow(false)
-        setControlObject(undefined)
-    }
 
     useEffect(() => {
         if(controlObjectList===undefined){
@@ -90,16 +84,18 @@ export default function ControlObject(){
                 reload() 
             }, 50);
     }
+
+    let buttons = [
+        <Button onClick={reload}>Обновить</Button>,
+        <Button onClick={update}>Обновить права</Button>
+    ]
     
     return(
         <div>
-            <div>
-                <h1>Ресурсы</h1>
-                <div style={{position: 'relative', left:'85%' }}>
-                    <Button onClick={reload}>Обновить</Button>
-                    <Button onClick={update}>Обновить права</Button>
-                </div>
-            </div>
+            <PageHeader
+                title={"Ресурсы"}
+                buttons={buttons}
+            />
             <div>
                 <Select 
                 onChange={(value) => { 

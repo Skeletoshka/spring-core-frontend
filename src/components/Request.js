@@ -1,9 +1,10 @@
 import { notification } from "antd";
 
 const userDetails = {
-    progUserId:0,
+    progUserId: 0,
     tokenAccess: "",
     userName: "",
+    peopleId: 0,
     roles: []
 }
 
@@ -22,7 +23,7 @@ export const requestToApi = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + userDetails.tokenAccess}
             }
-        return fetch('http://localhost:8080' + url, {
+        return fetch(process.env.REACT_APP_DEV_BACKEND_URL.replace("/undefined", "") + url, {
             method: 'POST',
             headers: header,
             body: JSON.stringify(body)
@@ -46,11 +47,12 @@ export const requestToApi = {
     },
 
     updateUserDetails: (data) => {
-        if(data != undefined){
+        if(data !== undefined){
             userDetails.tokenAccess = data.token
             userDetails.userName = data.username
             userDetails.roles = data.roles
             userDetails.progUserId = data.id
+            userDetails.peopleId = data.peopleId
         }else{
             userDetails.tokenAccess = ""
         }

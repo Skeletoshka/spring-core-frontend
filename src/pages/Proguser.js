@@ -2,6 +2,7 @@ import { Button, Modal, Table, Form, Input, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
+import PageHeader from "../components/PageHeader";
 
 const columns = [
     {
@@ -33,6 +34,13 @@ const GridDataOption = {
     from:'proguser'
 }
 
+const PeopleGridDataOption = {
+    rowCount:10,
+    page:1,
+    orderBy:'peopleId',
+    from:'people'
+}
+
 export default function Proguser(){
 
     const [progUserList, setProgUserList] = useState()
@@ -40,10 +48,11 @@ export default function Proguser(){
     const [show, setShow] = useState(false)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [accessRoleList, setAccessRoleList] = useState([])
+    const [peopleList, setPeopleList] = useState([])
+    const [loading, setLoading] = useState(true)
     const [form] = useForm()
 
     const onSelectChange = (newSelectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
     
@@ -58,15 +67,16 @@ export default function Proguser(){
     }
 
     useEffect(() => {
-        if(progUserList===undefined){
-            requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
-            .then(data => setProgUserList(data));
-        }
-    })
-
-    function reload(){
         requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
             .then(data => setProgUserList(data));
+        requestToApi.post("/v1/apps/objects/people/getlist", PeopleGridDataOption)
+            .then(data => setPeopleList(data));
+        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+            .then(data => setAccessRoleList(data));
+    }, [loading])
+
+    function reload(){
+        setLoading(true)
     }
 
     function add(){
@@ -74,12 +84,9 @@ export default function Proguser(){
         .then(data => {
             setProgUser(data)
             setShow(true)
+            reload()
+            form.resetFields()
         });
-        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-        .then(data => setAccessRoleList(data));
-        setTimeout(() => {
-            form.resetFields() 
-        }, 50);
     }
 
     function edit(id){
@@ -87,48 +94,41 @@ export default function Proguser(){
         .then(data => {
             setProgUser(data) 
             setShow(true)
+            reload()
+            form.resetFields()
         });
-        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-        .then(data => setAccessRoleList(data));
-        setTimeout(() => {
-            form.resetFields() 
-        }, 50);
     }
 
     function submit(){
-        requestToApi.post("/v1/apps/objects/proguser/save", proguser)
-        setTimeout(() => {
-            reload()
-        }, 500);
-        setShow(false)
-        setProgUser(undefined)
+        form.validateFields().then((values) => {
+            requestToApi.post("/v1/apps/objects/proguser/save", values)
+                .then(data => {
+                    reload()
+                    setShow(false)
+                    setProgUser(undefined)
+                })
+        })
     }
 
     function deleteRows(){
         requestToApi.post("/v1/apps/objects/proguser/delete", selectedRowKeys)
-        setTimeout(() => {
-            reload()
-        }, 50);
+            .then(data => {
+                reload()
+            })
     }
-    
-    function changeRoles(value){
-        proguser.accessRoleViews=value?.map(val => {
-            return {
-                accessRoleId: val
-            }
-        })
-    }
+
+    let buttons = [
+        <Button onClick={deleteRows}>Удалить</Button>,
+        <Button onClick={reload}>Обновить</Button>,
+        <Button onClick={add}>Добавить</Button>
+    ]
 
     return(
         <div>
-            <div>
-                <h1>Пользователи</h1>
-                <div style={{position: 'relative', left:'85%' }}>
-                    <Button onClick={deleteRows}>Удалить</Button>
-                    <Button onClick={reload}>Обновить</Button>
-                    <Button onClick={add}>Добавить</Button>
-                </div>
-            </div>
+            <PageHeader
+                title={"Пользователи"}
+                buttons={buttons}
+            />
             <Modal open = {show}
             title="Изменение пользователя" 
             onCancel={cancel}
@@ -155,10 +155,7 @@ export default function Proguser(){
                                     message: "Имя пользователя не может быть пустым"
                                 }
                             ]}>
-                            <Input name="username" 
-                            onChange={(event) => {
-                                proguser.progUserName = event.target.value
-                            }}
+                            <Input name="username"
                             ref={(input) => show&&input&&input.focus}
                             placeholder="Имя пользователя" 
                             value={proguser===undefined?'':proguser.progUserName}/>
@@ -166,9 +163,7 @@ export default function Proguser(){
                         <Form.Item
                             name="progUserFullName"
                             label="Полное имя пользователя">
-                            <Input name="fullusername" onChange={(event) => {
-                                proguser.progUserFullName = event.target.value
-                            }} placeholder="Полное имя пользователя" value={proguser===undefined?'':proguser.progUserFullName}/>
+                            <Input name="fullusername" placeholder="Полное имя пользователя" value={proguser===undefined?'':proguser.progUserFullName}/>
                         </Form.Item>
                         <Form.Item
                             name="progUserPassword"
@@ -179,9 +174,7 @@ export default function Proguser(){
                                     message : "Пароль не может быть пустым"
                                 }
                             ]}>
-                                <Input name="progUserPassword" onChange={(event) => {
-                                proguser.progUserPassword = event.target.value
-                            }} placeholder="Пароль"/>
+                                <Input name="progUserPassword" placeholder="Пароль"/>
                         </Form.Item>
                         <Form.Item
                             name="progUserActive"
@@ -192,9 +185,8 @@ export default function Proguser(){
                                     message : "Активность пользователя не может быть пустым"
                                 }
                             ]}>
-                                <Input name="progUserActive" onChange={(event) => {
-                                proguser.progUserActive = event.target.value
-                            }} placeholder="Активность пользователя" value={proguser===undefined?'':proguser.progUserActive}/>
+                                <Input name="progUserActive" placeholder="Активность пользователя"
+                                       value={proguser===undefined?'':proguser.progUserActive}/>
                         </Form.Item>
                         <Form.Item
                             name="progUserRoles"
@@ -220,7 +212,27 @@ export default function Proguser(){
                                         value: accessrole.accessRoleId
                                     }
                                 })}
-                                onChange={changeRoles}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="peopleId"
+                            label="Человек для пользователя"
+                            rules={[
+                                {
+                                    required: true,
+                                    message : "Человек не может быть пустыми"
+                                }
+                            ]}>
+                            <Select
+                                mode="multiple"
+                                style={{ width: '100%' }}
+                                defaultValue={proguser===undefined?[]:proguser.peopleId}
+                                options={peopleList?.map((people) => {
+                                    return {
+                                        label: people.peopleName + people.peopleLastName + people.MiddlepeopleName,
+                                        value: people.peopleId
+                                    }
+                                })}
                             />
                         </Form.Item>
                 </Form>
@@ -228,6 +240,7 @@ export default function Proguser(){
             <Table 
                 dataSource={progUserList} 
                 columns={columns}
+                loading={loading}
                 rowSelection={rowSelection}
                 rowKey={(record) => record.progUserId}
                 onRow={(record) => ({
