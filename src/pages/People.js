@@ -3,6 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
+import Dayjs from "dayjs";
 
 const columns = [
     {
@@ -22,16 +23,16 @@ const columns = [
     },
     {
         title: "Дата рождения человека",
-        dataIndex: "peopleDatebirth",
-        key: "peopleDatebirth",
-        render: (peopleDatebirth) => {
-            return new Date(peopleDatebirth).toLocaleDateString()
+        dataIndex: "peopleDateBirth",
+        key: "peopleDateBirth",
+        render: (peopleDateBirth) => {
+            return new Date(peopleDateBirth).toLocaleDateString()
         }
     },
     {
         title: "Класс человека",
-        dataIndex: "capclassId",
-        key: "capclassId"
+        dataIndex: "capClassName",
+        key: "capClassName"
     },
     {
         title: "Электронный адресс человека",
@@ -42,19 +43,6 @@ const columns = [
         title: "Номер телефона человека",
         dataIndex: "peoplePhone",
         key: "peoplePhone"
-    },
-    {
-        title: "Флаг удаления человека",
-        dataIndex: "peopleDeleteFlag",
-        key: "peopleDeleteFlag"
-    },
-    {
-        title: "Дата удаления человека",
-        dataIndex: "peopleDateDelete",
-        key: "peopleDateDelete",
-        render: (peopleDateDelete) => {
-            return new Date(peopleDateDelete).toLocaleDateString()
-        }
     }
 ]
 
@@ -66,18 +54,20 @@ const GridDataOption = {
     from:'peopleId'
 }
 
-const GridDataOptionDirection = {
-    namedFilters:[],
+const GridDataOptionCapClass = {
+    namedFilters:[
+        {name:"capClassTypeId", value:1}
+    ],
     rowCount:10,
     page:1,
-    orderBy:'peopleId',
-    from:'peopleId'
+    orderBy:'capClassId',
+    from:'capClass'
 }
 
 export default function People() {
     const [peopleList, setPeopleList] = useState([])
     const [capClassList, setCapClassList] = useState([])
-    const [people, setPeople] = useState()
+    const [id, setId] = useState()
     const [loading, setLoading] = useState(true)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
@@ -98,7 +88,7 @@ export default function People() {
                 setPeopleList(data)
                 setLoading(false);
             });
-        requestToApi.post("/v1/apps/dnk/refbooks/capclass/getlist", GridDataOptionDirection)
+        requestToApi.post("/v1/apps/refbooks/capclass/getlist", GridDataOptionCapClass)
             .then(data => {
                 setCapClassList(data)
                 setLoading(false);
@@ -111,40 +101,34 @@ export default function People() {
 
     function cancel(){
         setShow(false)
-        setPeople(undefined)
-    }
-
-    function add(){
-        requestToApi.post("/v1/apps/dnk/object/people/get", null)
-            .then(data => {
-                setPeople(data)
-                setShow(true)
-                form.resetFields()
-            });
     }
 
     function edit(id){
-        requestToApi.post("/v1/apps/dnk/object/people/get", id)
+        requestToApi.post("/v1/apps/dnk/objects/people/get", id)
             .then(data => {
-                setPeople(data)
+                setId(data.peopleId)
+                form.setFields(Object.keys(data).map((key) => ({
+                    name: key,
+                    value: key==="peopleDateBirth"||key==="peopleDateDelete"?Dayjs(data[key]):data[key],
+                })))
                 setShow(true)
-                form.resetFields()
             });
     }
 
     function submit(){
         form.validateFields().then((values) => {
-            requestToApi.post("/v1/apps/dnk/object/people/save", values)
+            values.peopleId = id;
+            values.peopleDateBirth = new Date(values.peopleDateBirth).getTime()
+            requestToApi.post("/v1/apps/dnk/objects/people/save", values)
                 .then(data => {
                     reload()
                     setShow(false)
-                    setPeople(undefined)
                 })
         })
     }
 
     function deleteRows(){
-        requestToApi.post("/v1/apps/dnk/object/people/delete", selectedRowKeys)
+        requestToApi.post("/v1/apps/dnk/objects/people/delete", selectedRowKeys)
             .then(data => {
                 reload()
             })
@@ -152,7 +136,7 @@ export default function People() {
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={add}>Добавить</Button>
+        <Button onClick={() => edit(null)}>Добавить</Button>
     ]
 
     return (
@@ -164,6 +148,7 @@ export default function People() {
             <Modal open={show}
                    title="Изменение людей"
                    onCancel={cancel}
+                   centered={true}
                    footer={[
                        <Button onClick={submit}>
                            Добавить
@@ -175,7 +160,6 @@ export default function People() {
                 <Form
                     form={form}
                     layout={"vertical"}
-                    initialValues={people}
                     name="formRegistry"
                     style={{padding: 20}}>
                     <Form.Item
@@ -188,8 +172,7 @@ export default function People() {
                             }
                         ]}>
                         <Input name="peopleName"
-                               placeholder="Имя человека"
-                               value={people === undefined ? '' : people.peopleName}/>
+                               placeholder="Имя человека"/>
                     </Form.Item>
                     <Form.Item
                         name="peopleLastName"
@@ -201,8 +184,7 @@ export default function People() {
                             }
                         ]}>
                         <Input name="peopleLastName"
-                               placeholder="Фамилия"
-                               value={people === undefined ? '' : people.peopleLastName}/>
+                               placeholder="Фамилия"/>
                     </Form.Item>
                     <Form.Item
                         name="peopleMiddleName"
@@ -214,11 +196,10 @@ export default function People() {
                             }
                         ]}>
                         <Input name="peopleMiddleName"
-                               placeholder="Отчество"
-                               value={people === undefined ? '' : people.peopleMiddleName}/>
+                               placeholder="Отчество"/>
                     </Form.Item>
                     <Form.Item
-                        name="peopleDatebirth"
+                        name="peopleDateBirth"
                         label="Дата рождения"
                         rules={[
                             {
@@ -226,12 +207,10 @@ export default function People() {
                                 message: "Дата рождения не может быть пустой"
                             }
                         ]}>
-                        <DatePicker name="peopleDatebirth"
-                               placeholder="Дата рождения"
-                               value={people === undefined ? '' : people.peopleDatebirth}/>
+                        <DatePicker name="peopleDateBirth"/>
                     </Form.Item>
                     <Form.Item
-                        name="capclassId"
+                        name="capClassId"
                         label="Класс"
                         rules={[
                             {
@@ -240,15 +219,26 @@ export default function People() {
                             }
                         ]}>
                         <Select
-                            name="capclassId"
+                            name="capClassId"
                             placeholder="Класс"
-                            value={people === undefined ? '' : people.peopleMiddleName}
-                            options={capClassList?.map((capclass) => {
+                            options={capClassList?.map((capClass) => {
                                 return {
-                                    label: capclass.capclassName,
-                                    value: capclass.capclassId
+                                    label: capClass.capClassName,
+                                    value: capClass.capClassId
                                 }
                             })}/>
+                    </Form.Item>
+                    <Form.Item
+                        name="peopleEmail"
+                        label="Электронный адрес">
+                        <Input name="peopleEmail"
+                               placeholder="Электронный адрес"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="peoplePhone"
+                        label="Номер телефона">
+                        <Input name="peoplePhone"
+                               placeholder="Номер телефона"/>
                     </Form.Item>
                 </Form>
             </Modal>

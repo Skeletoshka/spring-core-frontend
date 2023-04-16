@@ -64,14 +64,13 @@ export default function StudyProgram(){
     const [directionList, setDirectionList] = useState([])
     const [assistantList, setAssistantList] = useState([])
     const [teacherList, setTeacherList] = useState([])
-    const [studyProgram, setStudyProgram] = useState()
+    const [id, setId] = useState()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [loading, setLoading] = useState(true)
     const [show, setShow] = useState(false)
     const [form] = useForm()
 
     const onSelectChange = (newSelectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
     
@@ -82,16 +81,16 @@ export default function StudyProgram(){
 
     useEffect(() => {
         requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", GridDataOption)
-            .then(data => setStudyProgramList(data));
+            .then(data => {
+                setStudyProgramList(data)
+                setLoading(false)
+            });
         requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionTeacher)
             .then(data => setTeacherList(data));
         requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionAssistant)
             .then(data => setAssistantList(data));
         requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOptionAssistant)
-            .then(data => {
-                setDirectionList(data)
-                setLoading(false)
-            });
+            .then(data => setDirectionList(data));
     }, [loading])
 
     function reload(){
@@ -100,34 +99,27 @@ export default function StudyProgram(){
 
     function cancel(){
         setShow(false)
-        setStudyProgram(undefined)
     }
-
-    function add(){
-        requestToApi.post("/v1/apps/dnk/objects/studyprogram/get", null)
-            .then(data => {
-                setStudyProgram(data)
-                setShow(true)
-                form.resetFields()
-            });
-    } 
 
     function edit(id){
         requestToApi.post("/v1/apps/dnk/objects/studyprogram/get", id)
             .then(data => {
-                setStudyProgram(data) 
+                setId(data.studyProgramId)
+                form.setFields(Object.keys(data).map((key) => ({
+                    name: key,
+                    value: data[key],
+                })))
                 setShow(true)
-                form.resetFields()
             });
     }
 
     function submit(){
         form.validateFields().then((values) => {
+            values.studyProgramId = id;
             requestToApi.post("/v1/apps/dnk/objects/studyprogram/save", values)
                 .then(data => {
                     reload()
                     setShow(false)
-                    setStudyProgram(undefined)
                 })
         })
     }
@@ -142,7 +134,7 @@ export default function StudyProgram(){
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={add}>Добавить</Button>
+        <Button onClick={() => edit(null)}>Добавить</Button>
     ]
 
     return(
@@ -154,6 +146,7 @@ export default function StudyProgram(){
             <Modal open = {show}
             title="Изменение программы обучения" 
             onCancel={cancel}
+            centered={true}
             footer={[
                 <Button onClick={submit}>
                     Добавить
@@ -165,9 +158,8 @@ export default function StudyProgram(){
                 <Form
                     form={form}
                     layout={"vertical"}
-                    initialValues={studyProgram}
                     name="formRegistry"
-                    style={{ padding: 20 }}>
+                    style={{padding: 20}}>
                         <Form.Item
                             name="studyProgramName"
                             label="Название программы обучения"
@@ -178,8 +170,7 @@ export default function StudyProgram(){
                                 }
                             ]}>
                             <Input name="studyProgramName"
-                            placeholder="Название программы обучения"
-                            value={studyProgram===undefined?'':studyProgram.studyProgramName}/>
+                            placeholder="Название программы обучения"/>
                         </Form.Item>
                         <Form.Item
                             name="documentRealNumber"
@@ -191,8 +182,7 @@ export default function StudyProgram(){
                                 }
                             ]}>
                             <Input name="documentRealNumber"
-                            placeholder="Номер документа с программой обучения"
-                            value={studyProgram===undefined?'':studyProgram.documentRealNumber}/>
+                            placeholder="Номер документа с программой обучения"/>
                         </Form.Item>
                         <Form.Item
                             name="directionId"
@@ -205,7 +195,6 @@ export default function StudyProgram(){
                             ]}>
                             <Select
                                 style={{ width: '100%' }}
-                                defaultValue={studyProgram===undefined?{}:{value:studyProgram.directionId, label:studyProgram.directionName}}
                                 options={directionList.map((direction) => {
                                     return {
                                         label: direction.directionName,
@@ -225,7 +214,6 @@ export default function StudyProgram(){
                             ]}>
                             <Select
                                 style={{ width: '100%' }}
-                                defaultValue={studyProgram===undefined?{}:{value:studyProgram.teacherId, label:studyProgram.teacherName}}
                                 options={teacherList.map((people) => {
                                     return {
                                         label: people.peopleName,
@@ -239,7 +227,6 @@ export default function StudyProgram(){
                             label="Ассистент">
                             <Select
                                 style={{ width: '100%' }}
-                                defaultValue={studyProgram===undefined?{value:undefined, label:undefined}:{value:studyProgram.assistantId, label:studyProgram.assistantName}}
                                 options={assistantList.map((people) => {
                                     return {
                                         label: people.peopleName,

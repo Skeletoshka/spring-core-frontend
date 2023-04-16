@@ -27,14 +27,13 @@ const GridDataOption = {
 export default function AccessRole(){
 
     const [accessRoleList, setAccessRoleList] = useState();
-    const [accessRole, setAccessRole] = useState();
+    const [id, setId] = useState();
     const [show, setShow] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [loading, setLoading] = useState(true);
     const [form] = useForm()
 
     const onSelectChange = (newSelectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
     
@@ -45,7 +44,6 @@ export default function AccessRole(){
 
     function cancel(){
         setShow(false)
-        setAccessRole(undefined)
     }
 
     useEffect(() => {
@@ -60,31 +58,25 @@ export default function AccessRole(){
         setLoading(true)
     }
 
-    function add(){
-        requestToApi.post("/v1/apps/refbooks/accessrole/get", null)
-            .then(data => {
-                setAccessRole(data)
-                setShow(true)
-                form.resetFields()
-            });
-    }
-
     function edit(id){
         requestToApi.post("/v1/apps/refbooks/accessrole/get", id)
             .then(data => {
-                setAccessRole(data) 
+                setId(data.accessRoleId)
+                form.setFields(Object.keys(data).map((key) => ({
+                    name: key,
+                    value: data[key],
+                })))
                 setShow(true)
-                form.resetFields()
             });
     }
 
     function submit(){
         form.validateFields().then((values) => {
+            values.accessRoleId = id;
             requestToApi.post("/v1/apps/refbooks/accessrole/save", values)
                 .then(data => {
                     reload()
                     setShow(false)
-                    setAccessRole(undefined)
                 })
         })
     }
@@ -99,7 +91,7 @@ export default function AccessRole(){
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={add}>Добавить</Button>
+        <Button onClick={() => edit(null)}>Добавить</Button>
     ]
 
     return(
@@ -122,9 +114,9 @@ export default function AccessRole(){
                 <Form
                     form={form}
                     layout={"vertical"}
-                    initialValues={accessRole}
+                    centered={true}
                     name="formRegistry"
-                    style={{ padding: 20 }}>
+                    style={{padding: 20}}>
                         <Form.Item
                             name="accessRoleName"
                             label="Имя роли"
@@ -135,8 +127,7 @@ export default function AccessRole(){
                                 }
                             ]}>
                             <Input name="accessRoleName"
-                            placeholder="Имя роли" 
-                            value={accessRole===undefined?'':accessRole.accessRoleName}/>
+                            placeholder="Имя роли"/>
                         </Form.Item>
                         <Form.Item
                             name="accessRoleFullName"
@@ -148,8 +139,7 @@ export default function AccessRole(){
                                 }
                             ]}>
                             <Input name="accessRoleFullName"
-                            placeholder="Полное имя роли" 
-                            value={accessRole===undefined?'':accessRole.accessRoleFullName}/>
+                            placeholder="Полное имя роли" />
                         </Form.Item>
                 </Form>
             </Modal>

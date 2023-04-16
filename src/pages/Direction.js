@@ -27,8 +27,8 @@ const GridDataOption = {
 
 export default function Direction() {
     const [directionList, setDirectionList] = useState([])
-    const [direction, setDirection] = useState()
     const [loading, setLoading] = useState(true)
+    const [id, setId] = useState(undefined)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
     const [form] = useForm()
@@ -45,45 +45,38 @@ export default function Direction() {
     useEffect(() => {
         requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOption)
         .then(data => {
-            setDirectionList(data)
+            setDirectionList(data);
             setLoading(false);
         });
     }, [loading])
 
     function reload(){
-        setLoading(true)
+        setLoading(true);
     }
 
     function cancel(){
-        setShow(false)
-        setDirection(undefined)
+        setShow(false);
     }
-
-    function add(){
-        requestToApi.post("/v1/apps/dnk/refbooks/direction/get", null)
-            .then(data => {
-                setDirection(data)
-                setShow(true)
-                form.resetFields()
-            });
-    } 
 
     function edit(id){
         requestToApi.post("/v1/apps/dnk/refbooks/direction/get", id)
             .then(data => {
-                setDirection(data) 
+                setId(data.directionId)
+                form.setFields(Object.keys(data).map((key) => ({
+                    name: key,
+                    value: data[key],
+                })));
                 setShow(true)
-                form.resetFields()
             });
     }
 
     function submit(){
         form.validateFields().then((values) => {
+            values.directionId = id;
             requestToApi.post("/v1/apps/dnk/refbooks/direction/save", values)
                 .then(data => {
                     reload()
                     setShow(false)
-                    setDirection(undefined)
                 })
         })
     }
@@ -97,7 +90,7 @@ export default function Direction() {
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={add}>Добавить</Button>
+        <Button onClick={() => edit(null)}>Добавить</Button>
     ]
 
     return (
@@ -109,6 +102,7 @@ export default function Direction() {
             <Modal open={show}
                    title="Изменение направления"
                    onCancel={cancel}
+                   centered={true}
                    footer={[
                        <Button onClick={submit}>
                            Добавить
@@ -119,8 +113,8 @@ export default function Direction() {
                    ]}>
                 <Form
                     form={form}
+                    id={"directionId"}
                     layout={"vertical"}
-                    initialValues={direction}
                     name="formRegistry"
                     style={{padding: 20}}>
                     <Form.Item
@@ -133,15 +127,13 @@ export default function Direction() {
                             }
                         ]}>
                         <Input name="directionName"
-                               placeholder="Название программы обучения"
-                               value={direction === undefined ? '' : direction.directionName}/>
+                               placeholder="Название программы обучения"/>
                     </Form.Item>
                     <Form.Item
                         name="directionDesc"
                         label="Описание направления">
                         <Input name="directionDesc"
-                               placeholder="Описание направления"
-                               value={direction === undefined ? '' : direction.directionDesc}/>
+                               placeholder="Описание направления"/>
                     </Form.Item>
                 </Form>
             </Modal>
