@@ -69,6 +69,19 @@ export default function StudyProgram(){
     const [loading, setLoading] = useState(true)
     const [show, setShow] = useState(false)
     const [form] = useForm()
+    const [pagination, setPagination] = useState({
+        current: 2,
+        pageSize: 10,
+        showSizeChanger: true,
+        showTotal: (total)=>{
+            return "Всего " + total
+        },
+        onChange: (page, pageSize) => {
+            GridDataOption.page = page;
+            GridDataOption.rowCount = pageSize;
+            reload();
+        }
+    })
 
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -83,14 +96,11 @@ export default function StudyProgram(){
         requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", GridDataOption)
             .then(data => {
                 setStudyProgramList(data)
-                setLoading(false)
-            });
-        requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionTeacher)
-            .then(data => setTeacherList(data));
-        requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionAssistant)
-            .then(data => setAssistantList(data));
-        requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOptionAssistant)
-            .then(data => setDirectionList(data));
+                pagination.total = data.allRowCount;
+                pagination.current = data.page;
+                pagination.pageSize = data.rowCount;
+            })
+            .finally(() => setLoading(false));
     }, [loading])
 
     function reload(){
@@ -195,6 +205,12 @@ export default function StudyProgram(){
                             ]}>
                             <Select
                                 style={{ width: '100%' }}
+                                onClick={() => {
+                                    if(directionList.length === 0) {
+                                        requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOptionAssistant)
+                                            .then(data => setDirectionList(data.result));
+                                    }
+                                }}
                                 options={directionList.map((direction) => {
                                     return {
                                         label: direction.directionName,
@@ -214,6 +230,12 @@ export default function StudyProgram(){
                             ]}>
                             <Select
                                 style={{ width: '100%' }}
+                                onClick={() => {
+                                    if(teacherList.length === 0) {
+                                        requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionTeacher)
+                                            .then(data => setTeacherList(data.result));
+                                    }
+                                }}
                                 options={teacherList.map((people) => {
                                     return {
                                         label: people.peopleName,
@@ -227,6 +249,12 @@ export default function StudyProgram(){
                             label="Ассистент">
                             <Select
                                 style={{ width: '100%' }}
+                                onClick={() => {
+                                    if(assistantList.length === 0) {
+                                        requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionAssistant)
+                                            .then(data => setAssistantList(data.result));
+                                    }
+                                }}
                                 options={assistantList.map((people) => {
                                     return {
                                         label: people.peopleName,
@@ -242,6 +270,7 @@ export default function StudyProgram(){
                 columns={columns}
                 loading={loading}
                 rowSelection={rowSelection}
+                pagination={pagination}
                 rowKey={(record) => record.studyProgramId}
                 onRow={(record) => ({
                     onClick: () => {

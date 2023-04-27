@@ -32,6 +32,19 @@ export default function Direction() {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
     const [form] = useForm()
+    const [pagination, setPagination] = useState({
+        current: 2,
+        pageSize: 10,
+        showSizeChanger: true,
+        showTotal: (total)=>{
+            return "Всего " + total
+        },
+        onChange: (page, pageSize) => {
+            GridDataOption.page = page;
+            GridDataOption.rowCount = pageSize;
+            reload();
+        }
+    })
 
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -44,10 +57,13 @@ export default function Direction() {
 
     useEffect(() => {
         requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOption)
-        .then(data => {
-            setDirectionList(data);
-            setLoading(false);
-        });
+            .then(data => {
+                setDirectionList(data.result);
+                pagination.total = data.allRowCount;
+                pagination.current = data.page;
+                pagination.pageSize = data.rowCount;
+            })
+            .finally(() => setLoading(false));
     }, [loading])
 
     function reload(){
@@ -147,7 +163,8 @@ export default function Direction() {
                     onClick: () => {
                         edit(record.directionId)
                     },
-                })}/>
+                })}
+                pagination={pagination}/>
         </div>
     )
 

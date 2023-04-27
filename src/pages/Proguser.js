@@ -51,6 +51,19 @@ export default function Proguser(){
     const [peopleList, setPeopleList] = useState([])
     const [loading, setLoading] = useState(true)
     const [form] = useForm()
+    const [pagination, setPagination] = useState({
+        current: 2,
+        pageSize: 10,
+        showSizeChanger: true,
+        showTotal: (total)=>{
+            return "Всего " + total
+        },
+        onChange: (page, pageSize) => {
+            GridDataOption.page = page;
+            GridDataOption.rowCount = pageSize;
+            reload();
+        }
+    })
 
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -68,11 +81,13 @@ export default function Proguser(){
 
     useEffect(() => {
         requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
-            .then(data => setProgUserList(data));
-        requestToApi.post("/v1/apps/objects/people/getlist", PeopleGridDataOption)
-            .then(data => setPeopleList(data));
-        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-            .then(data => setAccessRoleList(data));
+            .then(data => {
+                setProgUserList(data)
+                pagination.total = data.allRowCount;
+                pagination.current = data.page;
+                pagination.pageSize = data.rowCount;
+            })
+            .finally(() => setLoading(false));
     }, [loading])
 
     function reload(){
@@ -200,6 +215,12 @@ export default function Proguser(){
                             <Select
                                 mode="multiple"
                                 style={{ width: '100%' }}
+                                onClick={() => {
+                                    if(accessRoleList.length === 0) {
+                                        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+                                            .then(data => setAccessRoleList(data.result));
+                                    }
+                                }}
                                 defaultValue={proguser===undefined?[]:proguser.accessRoleViews?.map((accessrole) => {
                                     return {
                                         label: accessrole.accessRoleName,
@@ -227,6 +248,12 @@ export default function Proguser(){
                                 mode="multiple"
                                 style={{ width: '100%' }}
                                 defaultValue={proguser===undefined?[]:proguser.peopleId}
+                                onClick={() => {
+                                    if(peopleList.length === 0) {
+                                        requestToApi.post("/v1/apps/objects/people/getlist", PeopleGridDataOption)
+                                            .then(data => setPeopleList(data.result));
+                                    }
+                                }}
                                 options={peopleList?.map((people) => {
                                     return {
                                         label: people.peopleName + people.peopleLastName + people.MiddlepeopleName,
@@ -243,6 +270,7 @@ export default function Proguser(){
                 loading={loading}
                 rowSelection={rowSelection}
                 rowKey={(record) => record.progUserId}
+                pagination={pagination}
                 onRow={(record) => ({
                     onClick: () => {
                         edit(record.progUserId) 

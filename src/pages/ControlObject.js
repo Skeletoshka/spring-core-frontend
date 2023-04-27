@@ -27,30 +27,41 @@ const columns = [
     }
 ]
 
-const GridDataOption = {
-    namedFilters:[],
-    rowCount:10,
-    page:1,
-    orderBy:'controlObjectUrl',
-    from:'controlobject'
-}
-
 const GridDataOptionRole = {
     namedFilters:[],
     rowCount:10,
     page:1,
-    orderBy:'accessRoleId',
-    from:'accessRole'
+    orderBy:'accessRoleId'
+}
+
+const GridDataOption = {
+    namedFilters:[],
+    rowCount:10,
+    page:1,
+    orderBy:'controlObjectUrl'
 }
 
 export default function ControlObject(){
     const [controlObjectList, setControlObjectList] = useState()
     const [accessRoleId, setAccessRoleId] = useState()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const [accessRoleList, setAccessRoleList] = useState([])
+    const [accessRoleList, setAccessRoleList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({
+        current: 2,
+        pageSize: 10,
+        showSizeChanger: true,
+        showTotal: (total)=>{
+            return "Всего " + total
+        },
+        onChange: (page, pageSize) => {
+            GridDataOption.page = page;
+            GridDataOption.rowCount = pageSize;
+            reload();
+        }
+    })
 
     const onSelectChange = (newSelectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
     
@@ -60,34 +71,36 @@ export default function ControlObject(){
     };
 
     useEffect(() => {
-        if(controlObjectList===undefined){
-            requestToApi.post("/v1/apps/refbooks/controlobject/getlist", GridDataOption)
-            .then(data => setControlObjectList(data));
-        }
-        if(accessRoleList.length===0){
-            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOptionRole)
-            .then(data => setAccessRoleList(data));
-        }
-    })
+        requestToApi.post("/v1/apps/refbooks/controlobject/getlist", GridDataOption)
+            .then(data => {
+                setControlObjectList(data.result);
+                pagination.total = data.allRowCount;
+                pagination.current = data.page;
+                pagination.pageSize = data.rowCount;
+            })
+            .finally(() => setLoading(false));
+    }, [loading])
 
     function reload(){
-        requestToApi.post("/v1/apps/refbooks/controlobject/getlist", GridDataOption)
-            .then(data => setControlObjectList(data));
-        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOptionRole)
-            .then(data => setAccessRoleList(data));
+        setLoading(true)
     }
 
-    function update(){
-        requestToApi.post("/v1/apps/refbooks/controlobjectrole/update", {accessRoleId: accessRoleId, 
+    function bind(){
+        requestToApi.post("/v1/apps/refbooks/controlobjectrole/bind", {accessRoleId: accessRoleId,
             controlObjects:selectedRowKeys.map((rowKey) => {return {controlObjectId: rowKey}})})
-            setTimeout(() => {
-                reload() 
-            }, 50);
+            .finally(reload);
+    }
+
+    function unbind(){
+        requestToApi.post("/v1/apps/refbooks/controlobjectrole/unbind", {accessRoleId: accessRoleId,
+            controlObjects:selectedRowKeys.map((rowKey) => {return {controlObjectId: rowKey}})})
+            .finally(reload);
     }
 
     let buttons = [
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={update}>Обновить права</Button>
+        <Button onClick={bind}>Дать права</Button>,
+        <Button onClick={unbind}>Забрать права</Button>
     ]
     
     return(
@@ -97,24 +110,36 @@ export default function ControlObject(){
                 buttons={buttons}
             />
             <div>
-                <Select 
-                onChange={(value) => { 
-                    GridDataOption.namedFilters.push({name:"accessRoleId", value: value});
-                    setAccessRoleId(value);
-                    reload();
-                }}
-                options={accessRoleList.map((accessrole) => {
-                    return {
-                        label: accessrole.accessRoleName,
-                        value: accessrole.accessRoleId
-                    }
-                })}/> 
+                <Select
+                    style={{width: "15%"}}
+                    onClick={() => {
+                        if (accessRoleList.length === 0){
+                            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOptionRole)
+                                .then((data) => {
+                                    setAccessRoleList(data.result)
+                                })
+                        }
+                    }}
+                    onChange={(value) => {
+                        GridDataOption.namedFilters.push({name:"accessRoleId", value: value});
+                        setAccessRoleId(value);
+                        reload();
+                    }}
+                    options={accessRoleList?.map((accessrole) => {
+                        return {
+                            label: accessrole.accessRoleName,
+                            value: accessrole.accessRoleId
+                        }
+                    })}/>
             </div>
             <Table 
-                dataSource={controlObjectList} 
+                dataSource={controlObjectList}
+                loading={loading}
                 columns={columns}
                 rowSelection={rowSelection}
-                rowKey={(record) => record.controlObjectId}/>
+                rowKey={(record) => record.controlObjectId}
+                pagination={pagination}
+            />
         </div>
     )
 }
