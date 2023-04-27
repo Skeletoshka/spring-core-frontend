@@ -109,8 +109,8 @@ export default function Proguser(){
     function submit(){
         form.validateFields().then((values) => {
             values.progUserId = id;
-            values.accessRoleViews = values.accessRoleViews.map(role => {return {accessRoleId: role}})
-            //values.accessRoleViews = values.accessRoleViews.map(role => {return role})
+            //TODO так не должно быть ->
+            values.accessRoleViews = values.accessRoleViews.map(role => {return {accessRoleId: role.value!==undefined?role.value:role}})
             requestToApi.post("/v1/apps/objects/proguser/save", values)
                 .then(data => {
                     reload()
