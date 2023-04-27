@@ -29,7 +29,14 @@ export const requestToApi = {
             body: JSON.stringify(body)
         })
         .then(response => {
-            return response.json()
+            if(response.ok) {
+                return response.json()
+            }else{
+                notification.open({
+                    message: 'Ошибка получения данных с сервера',
+                    description: "Обратитесь к системному администратору",
+                });
+            }
         })
         .then(json => {
             if(json.errorCode===100){

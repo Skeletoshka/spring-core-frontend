@@ -9,6 +9,7 @@ import ControlObject from './pages/ControlObject';
 import StudyProgram from './pages/StudyProgram';
 import Direction from './pages/Direction';
 import People from "./pages/People";
+import Activity from "./pages/Activity";
 
 class App extends Component {
   render() {
@@ -28,6 +29,7 @@ class App extends Component {
                   <Route path='/lk/studyprogram' element={<StudyProgram/>}/>
                   <Route path='/lk/direction' element={<Direction/>}/>
                   <Route path='/lk/people' element={<People/>}/>
+                  <Route path='/lk/activity' element={<Activity/>}/>
               </Routes>
             </BrowserRouter>
           </div>

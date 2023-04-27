@@ -3,6 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
+import Dayjs from "dayjs";
 
 const columns = [
     {
@@ -44,7 +45,7 @@ const PeopleGridDataOption = {
 export default function Proguser(){
 
     const [progUserList, setProgUserList] = useState()
-    const [proguser, setProgUser] = useState()
+    const [id, setId] = useState()
     const [show, setShow] = useState(false)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [accessRoleList, setAccessRoleList] = useState([])
@@ -76,13 +77,12 @@ export default function Proguser(){
 
     function cancel(){
         setShow(false)
-        setProgUser(undefined)
     }
 
     useEffect(() => {
         requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
             .then(data => {
-                setProgUserList(data)
+                setProgUserList(data.result)
                 pagination.total = data.allRowCount;
                 pagination.current = data.page;
                 pagination.pageSize = data.rowCount;
@@ -94,33 +94,27 @@ export default function Proguser(){
         setLoading(true)
     }
 
-    function add(){
-        requestToApi.post("/v1/apps/objects/proguser/get", null)
-        .then(data => {
-            setProgUser(data)
-            setShow(true)
-            reload()
-            form.resetFields()
-        });
-    }
-
     function edit(id){
         requestToApi.post("/v1/apps/objects/proguser/get", id)
         .then(data => {
-            setProgUser(data) 
+            setId(data.progUserId)
+            form.setFields(Object.keys(data).map((key) => ({
+                name: key,
+                value: key==="accessRoleViews"?data[key]?.map(accessRole => {return {value:accessRole.accessRoleId, label:accessRole.accessRoleName}}):data[key],
+            })))
             setShow(true)
-            reload()
-            form.resetFields()
         });
     }
 
     function submit(){
         form.validateFields().then((values) => {
+            values.progUserId = id;
+            values.accessRoleViews = values.accessRoleViews.map(role => {return {accessRoleId: role}})
+            //values.accessRoleViews = values.accessRoleViews.map(role => {return role})
             requestToApi.post("/v1/apps/objects/proguser/save", values)
                 .then(data => {
                     reload()
                     setShow(false)
-                    setProgUser(undefined)
                 })
         })
     }
@@ -135,7 +129,7 @@ export default function Proguser(){
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={add}>Добавить</Button>
+        <Button onClick={() => edit(null)}>Добавить</Button>
     ]
 
     return(
@@ -158,7 +152,6 @@ export default function Proguser(){
                 <Form
                     form={form}
                     layout={"vertical"}
-                    initialValues={proguser}
                     name="formRegistry"
                     style={{ padding: 20 }}>
                         <Form.Item
@@ -171,14 +164,12 @@ export default function Proguser(){
                                 }
                             ]}>
                             <Input name="username"
-                            ref={(input) => show&&input&&input.focus}
-                            placeholder="Имя пользователя" 
-                            value={proguser===undefined?'':proguser.progUserName}/>
+                            placeholder="Имя пользователя"/>
                         </Form.Item>
                         <Form.Item
                             name="progUserFullName"
                             label="Полное имя пользователя">
-                            <Input name="fullusername" placeholder="Полное имя пользователя" value={proguser===undefined?'':proguser.progUserFullName}/>
+                            <Input name="fullusername" placeholder="Полное имя пользователя"/>
                         </Form.Item>
                         <Form.Item
                             name="progUserPassword"
@@ -200,11 +191,10 @@ export default function Proguser(){
                                     message : "Активность пользователя не может быть пустым"
                                 }
                             ]}>
-                                <Input name="progUserActive" placeholder="Активность пользователя"
-                                       value={proguser===undefined?'':proguser.progUserActive}/>
+                                <Input name="progUserActive" placeholder="Активность пользователя"/>
                         </Form.Item>
                         <Form.Item
-                            name="progUserRoles"
+                            name="accessRoleViews"
                             label="Роли пользователя"
                             rules={[
                                 {
@@ -221,12 +211,6 @@ export default function Proguser(){
                                             .then(data => setAccessRoleList(data.result));
                                     }
                                 }}
-                                defaultValue={proguser===undefined?[]:proguser.accessRoleViews?.map((accessrole) => {
-                                    return {
-                                        label: accessrole.accessRoleName,
-                                        value: accessrole.accessRoleId
-                                    }
-                                })}
                                 options={accessRoleList.map((accessrole) => {
                                     return {
                                         label: accessrole.accessRoleName,
@@ -245,18 +229,16 @@ export default function Proguser(){
                                 }
                             ]}>
                             <Select
-                                mode="multiple"
                                 style={{ width: '100%' }}
-                                defaultValue={proguser===undefined?[]:proguser.peopleId}
                                 onClick={() => {
                                     if(peopleList.length === 0) {
-                                        requestToApi.post("/v1/apps/objects/people/getlist", PeopleGridDataOption)
-                                            .then(data => setPeopleList(data.result));
+                                        requestToApi.post("/v1/apps/dnk/objects/people/getlist", PeopleGridDataOption)
+                                            .then(data => setPeopleList(data));
                                     }
                                 }}
                                 options={peopleList?.map((people) => {
                                     return {
-                                        label: people.peopleName + people.peopleLastName + people.MiddlepeopleName,
+                                        label: people.peopleName + " " + people.peopleLastName + " " + people.peopleMiddleName,
                                         value: people.peopleId
                                     }
                                 })}

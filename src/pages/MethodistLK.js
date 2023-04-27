@@ -26,6 +26,7 @@ export default function MethodistLK(){
             <Button onClick={() =>navigate("/lk/studyprogram")}>Программы обучения</Button>
             <Button onClick={() =>navigate("/lk/direction")}>Направления</Button>
             <Button onClick={() =>navigate("/lk/people")}>Люди</Button>
+            <Button onClick={() =>navigate("/lk/activity")}>Мероприятия</Button>
         </div>
     )
 
