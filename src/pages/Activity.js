@@ -190,7 +190,13 @@ export default function Activity(){
                     </Form.Item>
                     <Form.Item
                         name="addressId"
-                        label="Адрес">
+                        label="Адрес"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Дата события не может быть пустой"
+                            }
+                        ]}>
                         <Select
                             style={{ width: '100%' }}
                             showSearch={true}
