@@ -10,6 +10,7 @@ import StudyProgram from './pages/StudyProgram';
 import Direction from './pages/Direction';
 import People from "./pages/People";
 import Activity from "./pages/Activity";
+import News from "./pages/News";
 
 class App extends Component {
   render() {
@@ -30,6 +31,7 @@ class App extends Component {
                   <Route path='/lk/direction' element={<Direction/>}/>
                   <Route path='/lk/people' element={<People/>}/>
                   <Route path='/lk/activity' element={<Activity/>}/>
+                  <Route path='/lk/news' element={<News/>}/>
               </Routes>
             </BrowserRouter>
           </div>

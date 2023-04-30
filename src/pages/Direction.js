@@ -21,8 +21,7 @@ const GridDataOption = {
     namedFilters:[],
     rowCount:10,
     page:1,
-    orderBy:'directionId',
-    from:'direction'
+    orderBy:'directionId'
 }
 
 export default function Direction() {

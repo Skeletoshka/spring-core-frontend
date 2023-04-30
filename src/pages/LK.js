@@ -4,6 +4,7 @@ import {requestToApi} from '../components/Request';
 import '../App.css';
 import AdminLK from './AdminLK';
 import MethodistLK from './MethodistLK';
+import AdmActivityLK from "./AdmActivityLK";
 
 
 export default function LK(){
@@ -17,6 +18,8 @@ export default function LK(){
             return AdminLK();
         case 'Методист':
             return MethodistLK();
+        case 'Администратор активности':
+            return AdmActivityLK();
         default:
             return(
                 <div>
