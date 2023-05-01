@@ -7,12 +7,6 @@ const DocumentStatus = (source)=>{
         padding:12,
         borderRadius: "50%"
     };
-//style={circleStyle} title={source.title} color={'#' + source.color}
-    //const gradientId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-    /*<radialGradient gradientUnits="userSpaceOnUse" cx="24" cy="24" r="24" id={"RadialGradient" + gradientId} spreadMethod="pad">
-        <stop offset="0" stopColor="white" />
-        <stop offset="1" stopColor={source.color} />
-    </radialGradient>*/
     const gradientId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     return(
         <div style={{height: '40px'}}>

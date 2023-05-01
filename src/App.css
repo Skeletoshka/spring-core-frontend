@@ -130,3 +130,12 @@
 .titleButtons{
   float: left;
 }
+
+.news {
+  border-width:2px;
+  border-style:solid;
+  padding: 10px;
+  border-spacing:70px;
+  background-color:#ffffff;
+  border-radius: 10px;
+}
