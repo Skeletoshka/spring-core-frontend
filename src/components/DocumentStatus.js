@@ -1,12 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 const DocumentStatus = (source)=>{
-    let circleStyle = {
-        display:"inline-block",
-        backgroundColor: "#" + source.color,
-        padding:12,
-        borderRadius: "50%"
-    };
     const gradientId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     return(
         <div style={{height: '40px'}}>

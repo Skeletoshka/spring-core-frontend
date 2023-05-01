@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {useNavigate} from "react-router-dom";
 
 export default function AdminLK(){
