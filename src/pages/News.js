@@ -4,6 +4,7 @@ import {requestToApi} from "../components/Request";
 import {Button, Form, Input, Modal, Table} from "antd";
 import PageHeader from "../components/PageHeader";
 import DocumentStatus from "../components/DocumentStatus";
+import TextArea from "antd/es/input/TextArea";
 
 const columns = [
     {
@@ -185,7 +186,12 @@ export default function News() {
                                 message: "Текст новости не может быть пустым"
                             }
                         ]}>
-                        <Input name="newsText"
+                        <TextArea name="newsText"
+                                  maxLength={5000}
+                                  style={{
+                                      height: 120,
+                                      resize: 'yes',
+                                  }}
                                placeholder="Текст новости"/>
                     </Form.Item>
                     <Form.Item

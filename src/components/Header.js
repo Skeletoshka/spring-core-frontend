@@ -6,9 +6,9 @@ const Header = ()=>{
     const navigate = useNavigate()
     return(
         <div className='header'>
-            <Image src={require('../img/auth/logo.png')}
+            <Image src={require('../img/auth/logo.png')} preview={false}
                  height='100%' onClick={() => navigate("/")}/>
-            <Image src={require('../img/auth/name.png')} height='100%'/>
+            <Image src={require('../img/auth/name.png')} preview={false} height='100%'/>
         </div>
     )
 }
