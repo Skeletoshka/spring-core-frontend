@@ -233,9 +233,11 @@ export default function Activity(){
                                     requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist",
                                         {
                                                 namedFilters:[],
+                                                rowCount:10,
+                                                page:1,
                                                 orderBy:'directionName'
                                             })
-                                        .then(data => setDirectionList(data));
+                                        .then(data => setDirectionList(data.result));
                                 }
                             }}
                             options={directionList?.map((direction) => {
@@ -287,7 +289,7 @@ export default function Activity(){
                                 if(capClassList.length === 0) {
                                     requestToApi.post("/v1/apps/refbooks/capclass/getlist",
                                         {
-                                            namedFilters:[{name:"capClassTypeId", value:1}],
+                                            namedFilters:[{name:"capClassTypeId", value:2}],
                                             rowCount:10,
                                             page:1,
                                             orderBy:'capclassName'

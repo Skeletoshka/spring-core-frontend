@@ -14,6 +14,7 @@ import News from "./pages/News";
 import NewsPublic from "./pages/public/News";
 import PageNotFound from "./pages/public/PageNotFound";
 import HomePage from "./pages/public/HomePage";
+import StudyProgramPublic from "./pages/public/StudyProgram";
 
 class App extends Component {
   render() {
@@ -36,6 +37,7 @@ class App extends Component {
                   <Route path='/lk/activity' element={<Activity/>}/>
                   <Route path='/lk/news' element={<News/>}/>
                   <Route path='/news' element={<NewsPublic/>}/>
+                  <Route path='/studyprogram' element={<StudyProgramPublic/>}/>
                   <Route path="*" element={<PageNotFound/>} />
               </Routes>
                 </div>
