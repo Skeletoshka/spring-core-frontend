@@ -7,7 +7,9 @@ const Header = ()=>{
     return(
         <div className='header'>
             <Image src={require('../img/auth/logo.png')} preview={false}
-                 height='100%' onClick={() => navigate("/")}/>
+                 height='100%' onClick={() => navigate("/")}
+                 style={{cursor:"pointer"}}
+                 />
             <Image src={require('../img/auth/name.png')} preview={false} height='100%'/>
         </div>
     )
