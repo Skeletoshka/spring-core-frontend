@@ -7,22 +7,22 @@ import Dayjs from "dayjs";
 
 const columns = [
     {
-        title: "Имя человека",
+        title: "Имя",
         dataIndex: "peopleName",
         key: "peopleName"
     },
     {
-        title: "Фамилия человека",
+        title: "Фамилия",
         dataIndex: "peopleLastName",
         key: "peopleLastName"
     },
     {
-        title: "Отчество человека",
+        title: "Отчество",
         dataIndex: "peopleMiddleName",
         key: "peopleMiddleName"
     },
     {
-        title: "Дата рождения человека",
+        title: "Дата рождения",
         dataIndex: "peopleDateBirth",
         key: "peopleDateBirth",
         render: (peopleDateBirth) => {
@@ -30,17 +30,17 @@ const columns = [
         }
     },
     {
-        title: "Класс человека",
+        title: "Класс",
         dataIndex: "capClassName",
         key: "capClassName"
     },
     {
-        title: "Электронный адресс человека",
+        title: "Электронный адресс",
         dataIndex: "peopleEmail",
         key: "peopleEmail"
     },
     {
-        title: "Номер телефона человека",
+        title: "Номер телефона",
         dataIndex: "peoplePhone",
         key: "peoplePhone"
     }
@@ -183,7 +183,7 @@ export default function People() {
                             }
                         ]}>
                         <Input name="peopleName"
-                               placeholder="Имя человека"/>
+                               placeholder="Имя"/>
                     </Form.Item>
                     <Form.Item
                         name="peopleLastName"
