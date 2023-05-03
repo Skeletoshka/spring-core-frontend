@@ -5,6 +5,7 @@ import '../App.css';
 import AdminLK from './AdminLK';
 import MethodistLK from './MethodistLK';
 import AdmActivityLK from "./AdmActivityLK";
+import ContingentLK from "./ContingentLK";
 
 
 export default function LK(){
@@ -20,6 +21,8 @@ export default function LK(){
             return MethodistLK();
         case 'Администратор активности':
             return AdmActivityLK();
+        case 'Работник с контингентом':
+            return ContingentLK();
         default:
             return(
                 <div>

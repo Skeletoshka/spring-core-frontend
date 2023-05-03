@@ -11,7 +11,7 @@ const columns = [
         key:'accessRoleName'
     },
     {
-        title:'Имя роли',
+        title:'Полное имя роли',
         dataIndex:'accessRoleFullName',
         key:'accessRoleFullName'
     }

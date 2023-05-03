@@ -16,6 +16,7 @@ import PageNotFound from "./pages/public/PageNotFound";
 import HomePage from "./pages/public/HomePage";
 import StudyProgramPublic from "./pages/public/StudyProgram";
 import ActivityPublic from "./pages/public/Activity";
+import Schedule from "./pages/Schedule";
 
 class App extends Component {
   render() {
@@ -37,6 +38,7 @@ class App extends Component {
                   <Route path='/lk/people' element={<People/>}/>
                   <Route path='/lk/activity' element={<Activity/>}/>
                   <Route path='/lk/news' element={<News/>}/>
+                  <Route path='/lk/schedule' element={<Schedule/>}/>
                   <Route path='/news' element={<NewsPublic/>}/>
                   <Route path='/studyprogram' element={<StudyProgramPublic/>}/>
                   <Route path='/activity' element={<ActivityPublic/>}/>
