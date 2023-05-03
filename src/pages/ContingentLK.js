@@ -8,6 +8,7 @@ export default function ContingentLK(){
         <div>
             <h1>Личный кабинет работника с контингентом</h1>
             <Button onClick={() =>navigate("/lk/schedule")}>Расписание</Button>
+            <Button onClick={() => navigate("/lk/attendance")}>Посещаемость</Button>
         </div>
     )
 }
