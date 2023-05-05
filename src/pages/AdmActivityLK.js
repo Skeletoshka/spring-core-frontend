@@ -24,6 +24,7 @@ export default function AdmActivityLK(){
             <h1>Личный кабинет администратора активности</h1>
             <LK_Info people = {progUser}/>
             <Button onClick={() => navigate("/lk/news")}>Новости</Button>
+            <Button onClick={() => navigate("/lk/workgroup")}>Учебные группы</Button>
         </div>
     )
 
