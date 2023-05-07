@@ -9,8 +9,7 @@ import ContingentLK from "./ContingentLK";
 
 
 export default function LK(){
-
-    switch(localStorage.getItem("roles")[0]){
+    switch(localStorage.getItem("roles")){
         case 'SYSDBA':
             return AdminLK();
         case 'Методист':

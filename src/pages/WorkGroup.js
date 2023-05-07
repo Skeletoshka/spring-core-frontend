@@ -96,7 +96,6 @@ export default function WorkGroup() {
                     name: key,
                     value: data[key],
                 })));
-                form.setFieldValue("workGroupName", "workGroupName")
                 setShow(true)
             });
     }
