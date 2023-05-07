@@ -1,18 +1,10 @@
 import { notification } from "antd";
 
-const userDetails = {
-    progUserId: 0,
-    tokenAccess: "",
-    userName: "",
-    peopleId: 0,
-    roles: []
-}
-
 export const requestToApi = {
 
     post: (url, body) => {
-        var header = {};
-        if(userDetails.tokenAccess==="" || userDetails.tokenAccess === undefined) {
+        let header = {};
+        if(localStorage.getItem("tokenAccess")==="" || localStorage.getItem("tokenAccess") === undefined) {
             header = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'}
@@ -21,7 +13,7 @@ export const requestToApi = {
             header = {
                 'Accept': 'application/json' ,
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + userDetails.tokenAccess}
+                'Authorization': 'Bearer ' + localStorage.getItem("tokenAccess")}
             }
         return fetch(process.env.REACT_APP_DEV_BACKEND_URL.replace("/undefined", "") + url, {
             method: 'POST',
@@ -55,17 +47,13 @@ export const requestToApi = {
 
     updateUserDetails: (data) => {
         if(data !== undefined){
-            userDetails.tokenAccess = data.token
-            userDetails.userName = data.username
-            userDetails.roles = data.roles
-            userDetails.progUserId = data.id
-            userDetails.peopleId = data.peopleId
+            localStorage.setItem("tokenAccess", data.token)
+            localStorage.setItem("userName", data.username)
+            localStorage.setItem("roles", data.roles)
+            localStorage.setItem("progUserId", data.id)
+            localStorage.setItem("peopleId", data.peopleId)
         }else{
-            userDetails.tokenAccess = ""
+            localStorage.setItem("tokenAccess", "")
         }
-    },
-
-    getUserDetails: () => {
-        return userDetails
     }
 }

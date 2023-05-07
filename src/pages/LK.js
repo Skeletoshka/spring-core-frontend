@@ -10,11 +10,7 @@ import ContingentLK from "./ContingentLK";
 
 export default function LK(){
 
-    function click(event){
-        requestToApi.getToken()
-    }
-
-    switch(requestToApi.getUserDetails().roles[0]){
+    switch(localStorage.getItem("roles")[0]){
         case 'SYSDBA':
             return AdminLK();
         case 'Методист':
@@ -27,7 +23,6 @@ export default function LK(){
             return(
                 <div>
                     <h1>У вас нет лк:(</h1>
-                    <Button onClick={click}>Нажми меня</Button>
                 </div>
             )
     }

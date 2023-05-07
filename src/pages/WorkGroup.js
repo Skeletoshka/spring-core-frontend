@@ -3,6 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
+import {Link} from "react-router-dom";
 
 const columns = [
     {
@@ -19,6 +20,14 @@ const columns = [
         title: "Наименование направления",
         dataIndex: "directionName",
         key: "directionName"
+    },
+    {
+        title: "Обучающиеся",
+        dataIndex: "students",
+        key: "students",
+        render: (_, entity) => {
+            return <Link to={'/lk/workgroup/' + entity.workGroupId}>Учащиеся</Link>
+        }
     }
 ]
 

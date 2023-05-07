@@ -19,6 +19,7 @@ import ActivityPublic from "./pages/public/Activity";
 import Schedule from "./pages/Schedule";
 import Attendance from "./pages/Attendance";
 import WorkGroup from "./pages/WorkGroup";
+import PeopleWorkGroup from "./pages/PeopleWorkGroup";
 
 class App extends Component {
   render() {
@@ -43,6 +44,7 @@ class App extends Component {
                   <Route path='/lk/schedule' element={<Schedule/>}/>
                   <Route path='/lk/attendance' element={<Attendance/>}/>
                   <Route path='/lk/workgroup' element={<WorkGroup/>}/>
+                  <Route path='/lk/workgroup/:id' element={<PeopleWorkGroup/>}/>
                   <Route path='/news' element={<NewsPublic/>}/>
                   <Route path='/studyprogram' element={<StudyProgramPublic/>}/>
                   <Route path='/activity' element={<ActivityPublic/>}/>

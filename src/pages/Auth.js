@@ -36,7 +36,7 @@ export default function Auth(){
     const navigate = useNavigate();
 
     useEffect(() => {
-        requestToApi.getUserDetails().tokenAccess = undefined
+        localStorage.setItem("tokenAccess", undefined)
         if(roleList === undefined){
             requestToApi.post("/security/v1/apps/auth/getroles", GridDataOption)
             .then(data => {
@@ -98,7 +98,6 @@ export default function Auth(){
                                     accessRoleFullName:"",
                                     accessRoleName:""
                                 })
-                                console.log(RegistryEntity.role)
                             }}>
                                 {roleList}
                             </Select>

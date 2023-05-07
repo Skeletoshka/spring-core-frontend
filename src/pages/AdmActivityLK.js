@@ -11,7 +11,7 @@ export default function AdmActivityLK(){
 
     useEffect(() => {
         if(progUser===undefined){
-            requestToApi.post("/v1/apps/dnk/objects/people/get ", requestToApi.getUserDetails().peopleId)
+            requestToApi.post("/v1/apps/dnk/objects/people/get ", localStorage.getItem("peopleId"))
                 .then(data => {
                     setProgUser(data)
                 });
