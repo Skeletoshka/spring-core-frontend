@@ -6,6 +6,7 @@ import AdminLK from './AdminLK';
 import MethodistLK from './MethodistLK';
 import AdmActivityLK from "./AdmActivityLK";
 import ContingentLK from "./ContingentLK";
+import ParentLK from "./ParentLK";
 
 
 export default function LK(){
@@ -18,6 +19,8 @@ export default function LK(){
             return AdmActivityLK();
         case 'Работник с контингентом':
             return ContingentLK();
+        case 'Родитель':
+            return ParentLK();
         default:
             return(
                 <div>

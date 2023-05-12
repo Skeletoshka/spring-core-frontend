@@ -8,12 +8,6 @@ import '../App.css';
 
 export default function Auth(){
 
-
-    const AuthEntity = {
-        username:'',
-        password:''
-    }
-
     const RegistryEntity = {
         username:"",
         password:"",
@@ -36,7 +30,7 @@ export default function Auth(){
     const navigate = useNavigate();
 
     useEffect(() => {
-        localStorage.setItem("tokenAccess", undefined)
+        requestToApi.clearUserDetails()
         if(roleList === undefined){
             requestToApi.post("/security/v1/apps/auth/getroles", GridDataOption)
             .then(data => {
@@ -50,9 +44,6 @@ export default function Auth(){
     });
 
     function submit(){
-        form.validateFields().then(value => {
-            console.log(value)
-        })
         requestToApi.post("/security/v1/apps/auth/signup", RegistryEntity)
         setActive(false)
     }

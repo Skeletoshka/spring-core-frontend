@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import LK_Info from '../components/LK_info';
 import { requestToApi } from "../components/Request"
 
-export default function AdmActivityLK(){
+export default function ParentLK(){
 
     const navigate = useNavigate()
     const [progUser, setProgUser] = useState(undefined)
@@ -21,9 +21,9 @@ export default function AdmActivityLK(){
 
     return(
         <div>
-            <h1>Личный кабинет администратора активности</h1>
+            <h1>Личный кабинет Родителя</h1>
             <LK_Info people = {progUser}/>
-            <Button onClick={() => navigate("/lk/news")}>Новости</Button>
+            <Button onClick={() =>navigate("/lk/studyprogram")}>Программы обучения</Button>
         </div>
     )
 

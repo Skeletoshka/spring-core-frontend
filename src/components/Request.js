@@ -55,5 +55,13 @@ export const requestToApi = {
         }else{
             localStorage.setItem("tokenAccess", "")
         }
+    },
+
+    clearUserDetails: () => {
+        localStorage.setItem("tokenAccess", "")
+        localStorage.setItem("userName", "")
+        localStorage.setItem("roles", "")
+        localStorage.setItem("progUserId", "")
+        localStorage.setItem("peopleId", "")
     }
 }

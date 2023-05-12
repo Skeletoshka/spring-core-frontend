@@ -1,10 +1,11 @@
 import React from "react";
 import {Button} from "antd";
 import {useNavigate} from "react-router-dom";
+import {requestToApi} from "../../components/Request";
 
 export default function HomePage() {
     const navigate = useNavigate()
-    localStorage.setItem("tokenAccess", undefined)
+    requestToApi.clearUserDetails()
     return (
         <div>
             <h1>Домашняя страница</h1>

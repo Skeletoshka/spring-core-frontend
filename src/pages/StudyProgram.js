@@ -25,34 +25,23 @@ const columns = [
     }
 ]
 
+if(localStorage.getItem("roles") === "Родитель"){
+    columns.push({
+        title: "Запись",
+        dataIndex: "request",
+        key: "request",
+        render: (_, entity) => {
+            return <Button onClick={() => signUp(entity.studyProgramId)}>Записаться на курс</Button>
+        }
+    })
+}
+
+function signUp(id) {
+    
+}
+
 const GridDataOption = {
     namedFilters:[],
-    rowCount:10,
-    page:1,
-    orderBy:'studyProgramId',
-    from:'studyProgram'
-}
-
-const GridDataOptionTeacher = {
-    namedFilters:[
-        {
-            name:"capClassId", 
-            value: 1
-        }
-    ],
-    rowCount:10,
-    page:1,
-    orderBy:'peopleId',
-    from:'people'
-}
-
-const GridDataOptionAssistant = {
-    namedFilters:[
-        {
-            name:"capClassId", 
-            value: 11
-        }
-    ],
     rowCount:10,
     page:1,
     orderBy:'studyProgramId',
@@ -207,7 +196,12 @@ export default function StudyProgram(){
                                 style={{ width: '100%' }}
                                 onClick={() => {
                                     if(directionList.length === 0) {
-                                        requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", GridDataOptionAssistant)
+                                        requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", {
+                                            namedFilters:[],
+                                            rowCount:10,
+                                            page:1,
+                                            orderBy:'directionId'
+                                        })
                                             .then(data => setDirectionList(data.result));
                                     }
                                 }}
@@ -232,7 +226,17 @@ export default function StudyProgram(){
                                 style={{ width: '100%' }}
                                 onClick={() => {
                                     if(teacherList.length === 0) {
-                                        requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionTeacher)
+                                        requestToApi.post("/v1/apps/dnk/objects/people/getlist", {
+                                            namedFilters:[
+                                                {
+                                                    name:"capClassId",
+                                                    value: 1
+                                                }
+                                            ],
+                                            rowCount:10,
+                                            page:1,
+                                            orderBy:'peopleId'
+                                        })
                                             .then(data => setTeacherList(data.result));
                                     }
                                 }}
@@ -251,7 +255,17 @@ export default function StudyProgram(){
                                 style={{ width: '100%' }}
                                 onClick={() => {
                                     if(assistantList.length === 0) {
-                                        requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOptionAssistant)
+                                        requestToApi.post("/v1/apps/dnk/objects/people/getlist", {
+                                            namedFilters:[
+                                                {
+                                                    name:"capClassId",
+                                                    value: 11
+                                                }
+                                            ],
+                                            rowCount:10,
+                                            page:1,
+                                            orderBy:'studyProgramId'
+                                        })
                                             .then(data => setAssistantList(data.result));
                                     }
                                 }}
