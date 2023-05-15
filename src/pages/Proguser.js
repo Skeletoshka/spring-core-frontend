@@ -3,7 +3,6 @@ import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
-import Dayjs from "dayjs";
 
 const columns = [
     {
@@ -52,7 +51,7 @@ export default function Proguser(){
     const [peopleList, setPeopleList] = useState([])
     const [loading, setLoading] = useState(true)
     const [form] = useForm()
-    const [pagination, setPagination] = useState({
+    const [pagination] = useState({
         current: 2,
         pageSize: 10,
         showSizeChanger: true,
@@ -80,14 +79,16 @@ export default function Proguser(){
     }
 
     useEffect(() => {
-        requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
-            .then(data => {
-                setProgUserList(data.result)
-                pagination.total = data.allRowCount;
-                pagination.current = data.page;
-                pagination.pageSize = data.rowCount;
-            })
-            .finally(() => setLoading(false));
+        if(loading) {
+            requestToApi.post("/v1/apps/objects/proguser/getlist", GridDataOption)
+                .then(data => {
+                    setProgUserList(data.result)
+                    pagination.total = data.allRowCount;
+                    pagination.current = data.page;
+                    pagination.pageSize = data.rowCount;
+                })
+                .finally(() => setLoading(false));
+        }
     }, [loading])
 
     function reload(){

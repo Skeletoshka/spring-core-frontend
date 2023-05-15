@@ -47,7 +47,7 @@ export default function ControlObject(){
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [accessRoleList, setAccessRoleList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [pagination, setPagination] = useState({
+    const [pagination] = useState({
         current: 2,
         pageSize: 10,
         showSizeChanger: true,
@@ -71,14 +71,16 @@ export default function ControlObject(){
     };
 
     useEffect(() => {
-        requestToApi.post("/v1/apps/refbooks/controlobject/getlist", GridDataOption)
-            .then(data => {
-                setControlObjectList(data.result);
-                pagination.total = data.allRowCount;
-                pagination.current = data.page;
-                pagination.pageSize = data.rowCount;
-            })
-            .finally(() => setLoading(false));
+        if(loading) {
+            requestToApi.post("/v1/apps/refbooks/controlobject/getlist", GridDataOption)
+                .then(data => {
+                    setControlObjectList(data.result);
+                    pagination.total = data.allRowCount;
+                    pagination.current = data.page;
+                    pagination.pageSize = data.rowCount;
+                })
+                .finally(() => setLoading(false));
+        }
     }, [loading])
 
     function reload(){

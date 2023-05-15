@@ -60,7 +60,7 @@ export default function Attendance() {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
     const [form] = useForm()
-    const [pagination, setPagination] = useState({
+    const [pagination] = useState({
         current: 2,
         pageSize: 10,
         showSizeChanger: true,
@@ -84,14 +84,16 @@ export default function Attendance() {
     };
 
     useEffect(() => {
-        requestToApi.post("/v1/apps/dnk/objects/attendance/getlist", GridDataOption)
-            .then(data => {
-                setAttendanceList(data.result)
-                pagination.total = data.allRowCount;
-                pagination.current = data.page;
-                pagination.pageSize = data.rowCount;
-            })
-            .finally(() => setLoading(false));
+        if(loading) {
+            requestToApi.post("/v1/apps/dnk/objects/attendance/getlist", GridDataOption)
+                .then(data => {
+                    setAttendanceList(data.result)
+                    pagination.total = data.allRowCount;
+                    pagination.current = data.page;
+                    pagination.pageSize = data.rowCount;
+                })
+                .finally(() => setLoading(false));
+        }
     }, [loading])
 
     function reload(){

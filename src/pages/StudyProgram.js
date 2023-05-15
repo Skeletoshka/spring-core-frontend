@@ -58,7 +58,7 @@ export default function StudyProgram(){
     const [loading, setLoading] = useState(true)
     const [show, setShow] = useState(false)
     const [form] = useForm()
-    const [pagination, setPagination] = useState({
+    const [pagination] = useState({
         current: 2,
         pageSize: 10,
         showSizeChanger: true,
@@ -82,14 +82,16 @@ export default function StudyProgram(){
     };
 
     useEffect(() => {
-        requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", GridDataOption)
-            .then(data => {
-                setStudyProgramList(data)
-                pagination.total = data.allRowCount;
-                pagination.current = data.page;
-                pagination.pageSize = data.rowCount;
-            })
-            .finally(() => setLoading(false));
+        if(loading) {
+            requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", GridDataOption)
+                .then(data => {
+                    setStudyProgramList(data)
+                    pagination.total = data.allRowCount;
+                    pagination.current = data.page;
+                    pagination.pageSize = data.rowCount;
+                })
+                .finally(() => setLoading(false));
+        }
     }, [loading])
 
     function reload(){

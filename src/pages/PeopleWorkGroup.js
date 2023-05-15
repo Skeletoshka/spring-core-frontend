@@ -1,9 +1,8 @@
-import {Button, Modal, Table, Form, Input, Select, DatePicker} from 'antd';
+import {Button, Modal, Table, Form, Select} from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
-import Dayjs from "dayjs";
 import {useParams} from "react-router-dom";
 
 const columns = [
@@ -57,7 +56,7 @@ export default function PeopleWorkGroup(){
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
     const [form] = useForm()
-    const [pagination, setPagination] = useState({
+    const [pagination] = useState({
         current: 2,
         pageSize: 10,
         showSizeChanger: true,
@@ -85,14 +84,16 @@ export default function PeopleWorkGroup(){
         if(GridDataOption.namedFilters.at(0) === undefined) {
             GridDataOption.namedFilters.push({name: "workGroupId", value: parseInt(id)})
         }
-        requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOption)
-            .then(data => {
-                setPeopleList(data.result)
-                pagination.total = data.allRowCount;
-                pagination.current = data.page;
-                pagination.pageSize = data.rowCount;
-            })
-            .finally(() => setLoading(false));
+        if(loading) {
+            requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOption)
+                .then(data => {
+                    setPeopleList(data.result)
+                    pagination.total = data.allRowCount;
+                    pagination.current = data.page;
+                    pagination.pageSize = data.rowCount;
+                })
+                .finally(() => setLoading(false));
+        }
     }, [loading])
 
     function reload(){

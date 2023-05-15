@@ -47,7 +47,7 @@ export default function News() {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
     const [form] = useForm()
-    const [pagination, setPagination] = useState({
+    const [pagination] = useState({
         current: 2,
         pageSize: 10,
         showSizeChanger: true,
@@ -71,14 +71,16 @@ export default function News() {
     };
 
     useEffect(() => {
-        requestToApi.post("/v1/apps/dnk/document/news/getlist", GridDataOption)
-            .then(data => {
-                setNewsList(data.result);
-                pagination.total = data.allRowCount;
-                pagination.current = data.page;
-                pagination.pageSize = data.rowCount;
-            })
-            .finally(() => setLoading(false));
+        if(loading) {
+            requestToApi.post("/v1/apps/dnk/document/news/getlist", GridDataOption)
+                .then(data => {
+                    setNewsList(data.result);
+                    pagination.total = data.allRowCount;
+                    pagination.current = data.page;
+                    pagination.pageSize = data.rowCount;
+                })
+                .finally(() => setLoading(false));
+        }
     }, [loading])
 
     function reload(){

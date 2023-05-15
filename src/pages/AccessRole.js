@@ -32,7 +32,7 @@ export default function AccessRole(){
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [loading, setLoading] = useState(true);
     const [form] = useForm()
-    const [pagination, setPagination] = useState({
+    const [pagination] = useState({
         current: 2,
         pageSize: 10,
         showSizeChanger: true,
@@ -60,14 +60,16 @@ export default function AccessRole(){
     }
 
     useEffect(() => {
-        requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
-            .then(data => {
-                setAccessRoleList(data.result)
-                pagination.total = data.allRowCount;
-                pagination.current = data.page;
-                pagination.pageSize = data.rowCount;
-            })
-            .finally(() => setLoading(false));
+        if(loading) {
+            requestToApi.post("/v1/apps/refbooks/accessrole/getlist", GridDataOption)
+                .then(data => {
+                    setAccessRoleList(data.result)
+                    pagination.total = data.allRowCount;
+                    pagination.current = data.page;
+                    pagination.pageSize = data.rowCount;
+                })
+                .finally(() => setLoading(false));
+        }
     }, [loading])
 
     function reload(){
