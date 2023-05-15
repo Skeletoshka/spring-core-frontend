@@ -81,9 +81,7 @@ export default function PeopleWorkGroup(){
     };
 
     useEffect(() => {
-        if(GridDataOption.namedFilters.at(0) === undefined) {
-            GridDataOption.namedFilters.push({name: "workGroupId", value: parseInt(id)})
-        }
+        GridDataOption.namedFilters.push({name: "workGroupId", value: parseInt(id)})
         if(loading) {
             requestToApi.post("/v1/apps/dnk/objects/people/getlist", GridDataOption)
                 .then(data => {
