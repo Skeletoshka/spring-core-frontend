@@ -172,7 +172,7 @@ export default function Schedule() {
                                         orderBy:'studyProgramId'
                                     })
                                         .then(data => {
-                                            setStudyProgramList(data)
+                                            setStudyProgramList(data.result)
                                         });
                                 }
                             }}

@@ -85,7 +85,7 @@ export default function StudyProgram(){
         if(loading) {
             requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", GridDataOption)
                 .then(data => {
-                    setStudyProgramList(data)
+                    setStudyProgramList(data.result)
                     pagination.total = data.allRowCount;
                     pagination.current = data.page;
                     pagination.pageSize = data.rowCount;

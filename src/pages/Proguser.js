@@ -21,9 +21,12 @@ const columns = [
         key:'progUserActive'
     },
     {
-        title:'Человек',
-        dataIndex:'peopleId',
-        key:'peopleId'
+        title: "Человек",
+        dataIndex: "people",
+        key: "people",
+        render: (_, entity) => {
+            return entity.peopleLastName!==null?(entity.peopleLastName + " " + entity.peopleName.substring(0, 1) + ". " + entity.peopleMiddleName.substring(0, 1) + "."):""
+        }
     }
 ]
 
@@ -169,7 +172,13 @@ export default function Proguser(){
                         </Form.Item>
                         <Form.Item
                             name="progUserFullName"
-                            label="Полное имя пользователя">
+                            label="Полное имя пользователя"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Имя пользователя не может быть пустым"
+                                }
+                            ]}>
                             <Input name="fullusername" placeholder="Полное имя пользователя"/>
                         </Form.Item>
                         <Form.Item
@@ -234,7 +243,7 @@ export default function Proguser(){
                                 onClick={() => {
                                     if(peopleList.length === 0) {
                                         requestToApi.post("/v1/apps/dnk/objects/people/getlist", PeopleGridDataOption)
-                                            .then(data => setPeopleList(data));
+                                            .then(data => setPeopleList(data.result));
                                     }
                                 }}
                                 options={peopleList?.map((people) => {

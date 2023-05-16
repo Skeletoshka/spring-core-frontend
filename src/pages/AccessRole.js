@@ -149,13 +149,7 @@ export default function AccessRole(){
                         </Form.Item>
                         <Form.Item
                             name="accessRoleFullName"
-                            label="Полное имя роли"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Полное имя роли не может быть пустым"
-                                }
-                            ]}>
+                            label="Полное имя роли">
                             <Input name="accessRoleFullName"
                             placeholder="Полное имя роли" />
                         </Form.Item>
