@@ -13,6 +13,7 @@
 .enterButton {
   background-color: orange;
 }
+
 .forgetButton {
   float: right;
 }
@@ -22,7 +23,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 7%;
+  height: 100%;
   width: 100%;
 }
 
@@ -33,12 +34,36 @@
   background-size: 10% 20%;
 }
 
+td{
+  font-size: 15px;
+}
+
+label{
+  font-size: 15px;
+}
+
+div{
+  font-size: 15px;
+}
+
+.menu{
+  position: relative;
+}
+
+.menu_item{
+  float: right;
+}
+
 .body-div{
+  padding: 1%;
+  box-sizing: border-box;
   display: table;
   position: absolute;
   top: 7%;
   height: 93%;
   width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .authFormMiddle {
@@ -78,6 +103,7 @@
 
 :root{
   background-color: rgb(255, 255, 255);
+  background-image: url("./img/background.png");
 }
 
 .rightButton{
@@ -112,8 +138,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 20px;
-  width: 97%;
+  width: 100%;
+  margin-bottom: 1%;
 }
 
 .pageHeaderDivChild{
@@ -128,7 +154,7 @@
   padding-left: 20px;
 }
 .titleButtons{
-  float: left;
+  float: right;
 }
 
 .news {
@@ -138,4 +164,7 @@
   border-spacing:70px;
   background-color:#ffffff;
   border-radius: 10px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
