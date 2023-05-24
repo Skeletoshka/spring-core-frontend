@@ -1,14 +1,15 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import {Image, Menu, MenuProps} from "antd";
-import Title from "antd/es/skeleton/Title";
+import {Button, Image, Menu, MenuProps} from "antd";
+import {UserOutlined} from "@ant-design/icons";
+import {requestToApi} from "./Request";
 
 const Header = ()=>{
     const navigate = useNavigate()
     const items: MenuProps['items']=[
         {
             icon: <Image src={require('../img/auth/logo.png')} preview={false}
-                         height='60px' onClick={() => navigate("/")}
+                         height='50px' onClick={() => navigate("/")}
                          style={{cursor:"pointer"}}/>
         },
         {
@@ -16,15 +17,37 @@ const Header = ()=>{
             key: "documents",
             children:[
                 {
-                    label: "Документ 1",
-                    key: "documents_1"
+                    label: "Обучение",
+                    key: "study",
+                    children: [
+                        {
+                            label: "Программы обучения",
+                            key: "studyProgram",
+                            onClick: () => navigate("/lk/studyprogram")
+                        },
+                        {
+                            label: "Посещаемость",
+                            key: "attendance",
+                            onClick: () => navigate("/lk/attendance")
+                        },
+                        {
+                            label: "Расписание",
+                            key: "schedule",
+                            onClick: () => navigate("/lk/schedule")
+                        },
+                        {
+                            label: "Группы",
+                            key: "workgroup",
+                            onClick: () => navigate("/lk/workgroup")
+                        }
+                    ]
                 },
                 {
-                    label: "Документ 2",
-                    key: "documents_2"
+                    label: "Заявки",
+                    key: "request",
+                    onClick: () => navigate("/lk/request")
                 }
             ],
-            style:{fontsize:"5em"}
         },
         {
             label: <div style={{fontSize:"1.5em"}}>Администрирование</div>,
@@ -44,13 +67,47 @@ const Header = ()=>{
                     label: "Роли",
                     key: "roles",
                     onClick: () => {navigate("/roles")}
+                },
+                {
+                    label: "Люди",
+                    key: "people",
+                    onClick: () => {navigate("/lk/people")}
                 }
             ]
         }
     ]
+
+    const itemsPublic: MenuProps['items']=[
+        {
+            icon: <Image src={require('../img/auth/logo.png')} preview={false}
+                         height='50px' onClick={() => navigate("/")}
+                         style={{cursor:"pointer"}}/>
+        },
+        {
+            label: <div style={{fontSize:"1.5em"}}>Новости</div>,
+            key: "news",
+            onClick: () => navigate("/news")
+        },
+        {
+            label: <div style={{fontSize:"1.5em"}}>Програмы обучения</div>,
+            key: "studyprogram",
+            onClick: () => navigate("/studyprogram")
+        },
+        {
+            label: <div style={{fontSize:"1.5em"}}>Активности</div>,
+            key: "activity",
+            onClick: () => navigate("/activity")
+        },
+        {
+            label: <Button icon={<UserOutlined/>} style={{border:"none"}}/>,
+            key: "auth",
+            onClick: () => navigate("/auth")
+        }
+    ]
+
     return(
-        <div style={{height:"5%"}}>
-            <Menu mode={"horizontal"} items={items} style={{backgroundColor: "orange"}}/>
+        <div>
+            <Menu mode={"horizontal"} items={requestToApi.isAuthUser()?items:itemsPublic} style={{backgroundColor: "orange"}}/>
         </div>
     )
 }

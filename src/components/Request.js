@@ -63,5 +63,9 @@ export const requestToApi = {
         localStorage.setItem("roles", "")
         localStorage.setItem("progUserId", "")
         localStorage.setItem("peopleId", "")
+    },
+
+    isAuthUser: () => {
+        return localStorage.getItem("tokenAccess") !== undefined && localStorage.getItem("tokenAccess").length > 0
     }
 }

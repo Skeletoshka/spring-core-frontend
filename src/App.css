@@ -59,9 +59,10 @@ div{
   box-sizing: border-box;
   display: table;
   position: absolute;
-  top: 7%;
+  top: 5.1%;
   height: 93%;
   width: 100%;
+  background-image: url("./img/background.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -103,7 +104,6 @@ div{
 
 :root{
   background-color: rgb(255, 255, 255);
-  background-image: url("./img/background.png");
 }
 
 .rightButton{
