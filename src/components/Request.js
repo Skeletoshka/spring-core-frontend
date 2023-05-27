@@ -24,10 +24,17 @@ export const requestToApi = {
             if(response.ok) {
                 return response.json()
             }else{
-                notification.open({
-                    message: 'Ошибка получения данных с сервера',
-                    description: "Обратитесь к системному администратору",
-                });
+                if(response.status === 500){
+                    notification.open({
+                        message: 'Ошибка получения данных с сервера',
+                        description: "Нет прав",
+                    });
+                }else {
+                    notification.open({
+                        message: 'Ошибка получения данных с сервера',
+                        description: "Обратитесь к системному администратору",
+                    });
+                }
             }
         })
         .then(json => {
@@ -48,9 +55,9 @@ export const requestToApi = {
     updateUserDetails: (data) => {
         if(data !== undefined){
             localStorage.setItem("tokenAccess", data.token)
-            localStorage.setItem("userName", data.username)
+            localStorage.setItem("progUserName", data.progUserName)
             localStorage.setItem("roles", data.roles)
-            localStorage.setItem("progUserId", data.id)
+            localStorage.setItem("progUserId", data.progUserId)
             localStorage.setItem("peopleId", data.peopleId)
         }else{
             localStorage.setItem("tokenAccess", "")
@@ -59,7 +66,7 @@ export const requestToApi = {
 
     clearUserDetails: () => {
         localStorage.setItem("tokenAccess", "")
-        localStorage.setItem("userName", "")
+        localStorage.setItem("progUserName", "")
         localStorage.setItem("roles", "")
         localStorage.setItem("progUserId", "")
         localStorage.setItem("peopleId", "")

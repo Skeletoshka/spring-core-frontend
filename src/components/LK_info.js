@@ -1,17 +1,11 @@
 const LK_Info = (source) => {
-    if(source.people !== undefined && source.people.peopleName !== null){
-        return(
-            <div className="personInfo">
-                {source.people.peopleLastName} {source.people.peopleName} {source.people.peopleMiddleName} <br/>
-                {source.people.peopleEmail} {source.people.peopleDateBirth} 
-            </div>
-        )
-    }else{
-        return(
-            <div className="personInfo">
-                <h1>У вас нет связи с человеком</h1>
-            </div>
-        )
-    }
+    return(<div className={"lk_card"}>
+        <div className={"name_lk"}>Имя пользователя: {localStorage.getItem("progUserName")}</div>
+        <div className={"name_people"}>Имя владельца УЗ: {source.people!==null&&source.people!==undefined?
+            (source.people.peopleLastName + " " + source.people.peopleName + " "
+                + source.people.peopleMiddleName):"Пользователь ни с кем не связан"}</div>
+        <div className={"name_people"}>Дата рождения владельца УЗ: {source.people!==null&&source.people!==undefined?
+            (new Date(source.people.peopleDateBirth).toLocaleDateString()):"Пользователь ни с кем не связан"}</div>
+    </div>)
 }
 export default LK_Info;

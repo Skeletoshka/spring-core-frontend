@@ -1,33 +1,26 @@
-import {Button, Modal, Table, Form, Input, DatePicker, Select} from 'antd';
+import {Button, Modal, Table, Form, Input, DatePicker, Select, Checkbox} from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
 import Dayjs from "dayjs";
 
-const columns = [
+const peoples = []
+
+const formTableColumns = [
     {
-        title: "Наименование предмета",
-        dataIndex: "studyProgramName",
-        key: "studyProgramName"
-    },
-    {
-        title: "Наименование учебной группы",
-        dataIndex: "workGroupName",
-        key: "workGroupName"
-    },
-    {
-        title: "Место проведения",
-        dataIndex: "schedulePlace",
-        key: "schedulePlace"
-    },
-    {
-        title: "Дата проведения",
-        dataIndex: "scheduleDate",
-        key: "scheduleDate",
-        render: (peopleDateBirth) => {
-            return new Date(peopleDateBirth).toLocaleString()
+        title: "ФИО ученика",
+        dataIndex: "people",
+        key: "people",
+        render: (_, entity) => {
+            return entity.peopleLastName + " " + entity.peopleName.substring(0, 1) + ". " + entity.peopleMiddleName.substring(0, 1) + ". "
         }
+    },
+    {
+        title: "Наличие",
+        dataIndex: "attendancePresenceFlag",
+        key: "attendancePresenceFlag",
+        render: (_, entity) => <Checkbox onClick={() => peoples.push(entity.peopleId)}/>
     }
 ]
 
@@ -41,12 +34,15 @@ const GridDataOption = {
 export default function Schedule() {
     const [scheduleList, setScheduleList] = useState([])
     const [studyProgramList, setStudyProgramList] = useState([])
+    const [peopleList, setPeopleList] = useState([])
     const [workGroupList, setWorkGroupList] = useState([])
     const [id, setId] = useState()
     const [loading, setLoading] = useState(true)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
+    const [showAttendance, setShowAttendance] = useState(false)
     const [form] = useForm()
+    const [formAttendance] = useForm()
     const [pagination] = useState({
         current: 2,
         pageSize: 10,
@@ -60,6 +56,68 @@ export default function Schedule() {
             reload();
         }
     })
+
+    const columns = [
+        {
+            title: "Наименование предмета",
+            dataIndex: "studyProgramName",
+            key: "studyProgramName",
+            onCell: record => {
+                return {
+                    onClick: () => {
+                        edit(record.scheduleId)
+                    }
+                }
+            }
+        },
+        {
+            title: "Наименование учебной группы",
+            dataIndex: "workGroupName",
+            key: "workGroupName",
+            onCell: record => {
+                return {
+                    onClick: () => {
+                        edit(record.scheduleId)
+                    }
+                }
+            }
+        },
+        {
+            title: "Место проведения",
+            dataIndex: "schedulePlace",
+            key: "schedulePlace",
+            onCell: record => {
+                return {
+                    onClick: () => {
+                        edit(record.scheduleId)
+                    }
+                }
+            }
+        },
+        {
+            title: "Дата проведения",
+            dataIndex: "scheduleDate",
+            key: "scheduleDate",
+            render: (peopleDateBirth) => {
+                return new Date(peopleDateBirth).toLocaleString()
+            },
+            onCell: record => {
+                return {
+                    onClick: () => {
+                        edit(record.scheduleId)
+                    }
+                }
+            }
+        },
+        {
+            title: "Посещаемость",
+            dataIndex: "attendance",
+            key: "attendance",
+            render: (_, entity) => {
+                return <Button onClick={() => editAttendance(entity.scheduleId)}>Заполнить посещаемость</Button>
+            }
+        }
+    ]
 
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -79,7 +137,9 @@ export default function Schedule() {
                     pagination.current = data.page;
                     pagination.pageSize = data.rowCount;
                 })
-                .finally(() => setLoading(false));
+                .finally(() => {
+                    setLoading(false)
+                });
         }
     }, [loading])
 
@@ -89,6 +149,10 @@ export default function Schedule() {
 
     function cancel(){
         setShow(false)
+    }
+
+    function cancelAttendance(){
+        setShowAttendance(false)
     }
 
     function edit(id){
@@ -103,6 +167,37 @@ export default function Schedule() {
             });
     }
 
+    function editAttendance(id){
+        peoples.fill({}, 0)
+        cancel()
+        let workGroupId = scheduleList?.map(schedule => {
+            if (schedule.scheduleId === id){
+                return schedule.workGroupId
+            }
+        }).pop()
+        if(workGroupId === undefined){
+            workGroupId = scheduleList?.map(schedule => {
+                if (schedule.scheduleId === id){
+                    return schedule.workGroupId
+                }
+            }).at(0)
+        }
+        requestToApi.post("/v1/apps/dnk/objects/people/getlist", {
+            namedFilters: [{
+                name: "workGroupId",
+                value: workGroupId
+            }],
+            rowCount: 100,
+            page: 1,
+            orderBy: 'peopleLastName'
+        })
+            .then(data => {
+                setPeopleList(data.result)
+            })
+        setShowAttendance(true)
+        cancel()
+    }
+
     function submit(){
         form.validateFields().then((values) => {
             values.scheduleId = id;
@@ -115,9 +210,15 @@ export default function Schedule() {
         })
     }
 
+    function submitAttendance(){
+        formAttendance.validateFields().then((values) => {
+            console.log(values)
+        })
+    }
+
     function deleteRows(){
         requestToApi.post("/v1/apps/dnk/objects/schedule/delete", selectedRowKeys)
-            .then(data => {
+            .then(() => {
                 reload()
             })
     }
@@ -134,6 +235,33 @@ export default function Schedule() {
                 title={"Расписание"}
                 buttons={buttons}
             />
+            <Modal open={showAttendance}
+                   title="Изменение посещаемости"
+                   onCancel={cancelAttendance}
+                   centered={true}
+                   footer={[
+                       <Button onClick={submitAttendance}>
+                           Добавить
+                       </Button>,
+                       <Button onClick={cancelAttendance}>
+                           Назад
+                       </Button>
+                   ]}>
+                <Form
+                    form={formAttendance}
+                    layout={"vertical"}
+                    name="formRegistry"
+                    style={{padding: 20}}>
+                    <Form.Item
+                        name="attendance"
+                        label="Посещаемость">
+                        <Table
+                            dataSource={peopleList}
+                            columns={formTableColumns}
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
             <Modal open={show}
                    title="Изменение расписания"
                    onCancel={cancel}
@@ -240,12 +368,7 @@ export default function Schedule() {
                 loading={loading}
                 rowSelection={rowSelection}
                 rowKey={(record) => record.scheduleId}
-                pagination={pagination}
-                onRow={(record) => ({
-                    onClick: () => {
-                        edit(record.scheduleId)
-                    },
-                })}/>
+                pagination={pagination}/>
         </div>
     )
 

@@ -20,22 +20,6 @@
   float: right;
 }
 
-.header{
-  background-color: orange;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.header-logo{
-  height: 100%;
-  width: 10%;
-  background-image:url('./img/auth/logo.png');
-  background-size: 10% 20%;
-}
-
 td{
   font-size: 15px;
 }
@@ -46,14 +30,6 @@ label{
 
 div{
   font-size: 15px;
-}
-
-.menu{
-  position: relative;
-}
-
-.menu_item{
-  float: right;
 }
 
 .body-div{
@@ -80,60 +56,8 @@ div{
   width: 20%;
 }
 
-.registryFormOuter {
-  display: table;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background-image:url('./img/auth/фон_регистрации.png');
-  background-size: 100% 100%;
-  opacity: 0.8;
-}
-
-.registryFormMiddle{
-  height: 100%;
-  width: 20%;
-  margin-top: 0;
-  background-color: aliceblue;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.registryFormInner {
-  padding-top: 60%;
-  width: 100%;
-}
-
 :root{
   background-color: rgb(255, 255, 255);
-}
-
-.rightButton{
-  width:45%;
-  margin: auto;
-}
-
-.leftButton{
-  width:45%;
-  margin: 0 0 0 10%;
-}
-
-.message-error{
-  margin-right: 0;
-}
-
-.navig_rol{
-  position: relative;
-  left: 78%;
-  top: 5px;
-
-}
-
-.personInfo{
-  border-radius: 10px;
-  background-color: darkgray;
-  width:60%;
-  text-align: center;
 }
 
 .pageHeaderDiv{
@@ -155,6 +79,7 @@ div{
   line-height: 30px;
   padding-left: 20px;
 }
+
 .titleButtons{
   float: right;
 }
@@ -169,4 +94,24 @@ div{
   width: 50%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.lk_card{
+  background-color: white;
+  width: 40%;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.name_lk{
+  font-size: 25px;
+  line-height: 30px;
+  padding-left: 20px;
+}
+
+.name_people{
+  font-size: 20px;
+  line-height: 30px;
+  padding-left: 20px;
 }

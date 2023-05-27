@@ -1,31 +1,24 @@
-import { Button } from 'antd';
-import React from 'react';
-import {requestToApi} from '../components/Request';
+import React, {useEffect, useState} from 'react';
 import '../App.css';
-import AdminLK from './AdminLK';
-import MethodistLK from './MethodistLK';
-import AdmActivityLK from "./AdmActivityLK";
-import ContingentLK from "./ContingentLK";
-import ParentLK from "./ParentLK";
+import LK_Info from "../components/LK_info";
+import {requestToApi} from "../components/Request";
 
-
+let progUser;
 export default function LK(){
-    switch(localStorage.getItem("roles")){
-        case 'SYSDBA':
-            return AdminLK();
-        case 'Методист':
-            return MethodistLK();
-        case 'Администратор активности':
-            return AdmActivityLK();
-        case 'Работник с контингентом':
-            return ContingentLK();
-        case 'Родитель':
-            return ParentLK();
-        default:
-            return(
-                <div>
-                    <h1>У вас нет лк:(</h1>
-                </div>
-            )
-    }
+    const[people, setPeople] = useState(undefined)
+    const[progUser, setProgUser] = useState(undefined)
+    useEffect(() => {
+        requestToApi.post("/v1/apps/objects/proguser/get", localStorage.getItem("progUserId"))
+            .then(data => {
+                setProgUser(data)
+                if(data.peopleId !== null && data.peopleId !== undefined) {
+                    requestToApi.post("/v1/apps/dnk/objects/people/get", data.peopleId)
+                        .then(dataPeople => {
+                            setPeople(dataPeople)
+                        })
+                }
+            });
+    })
+
+    return <LK_Info progUser = {progUser} people = {people}/>
 }
