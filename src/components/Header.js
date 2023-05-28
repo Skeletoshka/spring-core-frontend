@@ -26,11 +26,6 @@ const Header = ()=>{
                             onClick: () => navigate("/lk/studyprogram")
                         },
                         {
-                            label: "Посещаемость",
-                            key: "attendance",
-                            onClick: () => navigate("/lk/attendance")
-                        },
-                        {
                             label: "Расписание",
                             key: "schedule",
                             onClick: () => navigate("/lk/schedule")

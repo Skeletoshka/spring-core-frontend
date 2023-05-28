@@ -5,7 +5,7 @@ import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
 import Dayjs from "dayjs";
 
-const peoples = []
+let peoples = []
 
 const formTableColumns = [
     {
@@ -20,7 +20,16 @@ const formTableColumns = [
         title: "Наличие",
         dataIndex: "attendancePresenceFlag",
         key: "attendancePresenceFlag",
-        render: (_, entity) => <Checkbox onClick={() => peoples.push(entity.peopleId)}/>
+        render: (_, entity) => <Checkbox defaultChecked={entity.attendancePresenceFlag === 1}
+                                         onChange={(event) => {
+                                             if (event.target.checked) {
+                                                 entity.attendancePresenceFlag = 1
+                                             } else {
+                                                 entity.attendancePresenceFlag = 0
+                                             }
+                                         }}
+                                         key={entity.peopleId}
+        />
     }
 ]
 
@@ -168,7 +177,8 @@ export default function Schedule() {
     }
 
     function editAttendance(id){
-        peoples.fill({}, 0)
+        setId(id)
+        peoples = []
         cancel()
         let workGroupId = scheduleList?.map(schedule => {
             if (schedule.scheduleId === id){
@@ -182,11 +192,17 @@ export default function Schedule() {
                 }
             }).at(0)
         }
-        requestToApi.post("/v1/apps/dnk/objects/people/getlist", {
-            namedFilters: [{
+        requestToApi.post("/v1/apps/dnk/objects/attendance/getlist", {
+            namedFilters: [
+                {
                 name: "workGroupId",
                 value: workGroupId
-            }],
+                },
+                {
+                    name: "scheduleId",
+                    value: id
+                }
+            ],
             rowCount: 100,
             page: 1,
             orderBy: 'peopleLastName'
@@ -211,9 +227,18 @@ export default function Schedule() {
     }
 
     function submitAttendance(){
-        formAttendance.validateFields().then((values) => {
-            console.log(values)
+        requestToApi.post("/v1/apps/dnk/objects/attendance/save", {
+            scheduleId: id,
+            attendances: peopleList.map(people => {
+                return{
+                    peopleId: people.peopleId,
+                    attendancePresenceFlag: people.attendancePresenceFlag
+                }
+            })
         })
+            .then(data => {
+                setShowAttendance(false)
+            })
     }
 
     function deleteRows(){
