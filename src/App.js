@@ -7,6 +7,8 @@ import AccessRole from './pages/AccessRole';
 import Proguser from './pages/Proguser';
 import ControlObject from './pages/ControlObject';
 import StudyProgram from './pages/StudyProgram';
+import StudyCase from './pages/StudyCase';
+import Block from './pages/Block';
 import Direction from './pages/Direction';
 import People from "./pages/People";
 import Activity from "./pages/Activity";
@@ -38,6 +40,8 @@ class App extends Component {
                   <Route path='/lk/proguser' element={<Proguser/>}/>
                   <Route path='/lk/controlobject' element={<ControlObject/>}/>
                   <Route path='/lk/studyprogram' element={<StudyProgram/>}/>
+                  <Route path='/lk/studyprogram/studycase/:id' element={<StudyCase/>}/>
+                  <Route path='/lk/studyprogram/studycase/block/:id' element={<Block/>}/>
                   <Route path='/lk/direction' element={<Direction/>}/>
                   <Route path='/lk/people' element={<People/>}/>
                   <Route path='/lk/activity' element={<Activity/>}/>

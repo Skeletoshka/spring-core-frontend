@@ -3,6 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
+import {Link} from "react-router-dom";
 
 const columns = [
     {
@@ -21,6 +22,14 @@ const columns = [
         key: "teacher",
         render: (_, entity) => {
             return entity.teacherLastName + " " + entity.teacherName.substring(0, 1) + ". " + entity.teacherMiddleName.substring(0, 1) + "."
+        }
+    },
+    {
+        title: "Разделы",
+        dataIndex: "studycase",
+        key: "studycase",
+        render: (_, entity) => {
+            return <Link to={'/lk/studyprogram/studycase/' + entity.studyProgramId}>Просмотреть разделы</Link>
         }
     }
 ]
