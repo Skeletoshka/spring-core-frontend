@@ -41,6 +41,11 @@ const Header = ()=>{
                     label: "Заявки",
                     key: "request",
                     onClick: () => navigate("/lk/request")
+                },
+                {
+                    label: "Файлы",
+                    key: "files",
+                    onClick: () => navigate("/lk/file")
                 }
             ],
         },

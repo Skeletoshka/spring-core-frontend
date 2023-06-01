@@ -144,7 +144,7 @@ export default function Direction() {
                             }
                         ]}>
                         <Input name="directionName"
-                               placeholder="Название программы обучения"/>
+                               placeholder="Название направления"/>
                     </Form.Item>
                     <Form.Item
                         name="directionDesc"
