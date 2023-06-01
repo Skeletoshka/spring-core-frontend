@@ -1,4 +1,4 @@
-import {Button, Form, Input, Modal, Table} from 'antd';
+import {Button, Form, Input, Modal, Select, Table} from 'antd';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
@@ -16,9 +16,9 @@ const columns = [
         width: "5%"
     },
     {
-        title: "Имя заявки",
-        dataIndex: "requestName",
-        key: "requestName"
+        title: "Текст заявки",
+        dataIndex: "requestText",
+        key: "requestText"
     },
     {
         title: "Услуга",
@@ -42,6 +42,7 @@ const GridDataOption = {
 
 export default function Request(){
     const [requestList, setRequestList] = useState([])
+    const [serviceList, setServiceList] = useState([])
     const [loading, setLoading] = useState(true)
     const [id, setId] = useState(undefined)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -63,7 +64,7 @@ export default function Request(){
 
     useEffect(() => {
         if (loading) {
-            requestToApi.post("./v1/apps/dnk/document/request/getlist", GridDataOption)
+            requestToApi.post("/v1/apps/dnk/document/request/getlist", GridDataOption)
                 .then(data => {
                     setRequestList(data.result)
                     pagination.total = data.allRowCount;
@@ -121,10 +122,34 @@ export default function Request(){
             })
     }
 
+    function setSent(){
+        requestToApi.post("/v1/apps/dnk/document/request/setstatus/send", selectedRowKeys)
+            .then(data => {
+                reload()
+            })
+    }
+
+    function setSubmit(){
+        requestToApi.post("/v1/apps/dnk/document/request/setstatus/submit", selectedRowKeys)
+            .then(data => {
+                reload()
+            })
+    }
+
+    function setReject(){
+        requestToApi.post("/v1/apps/dnk/document/request/setstatus/reject", selectedRowKeys)
+            .then(data => {
+                reload()
+            })
+    }
+
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={() => edit(null)}>Добавить</Button>
+        <Button onClick={() => edit(null)}>Добавить</Button>,
+        <Button onClick={setSent}>Отправить</Button>,
+        <Button onClick={setSubmit}>Принять</Button>,
+        <Button onClick={setReject}>Отклонить</Button>
     ]
 
     return(
@@ -134,7 +159,7 @@ export default function Request(){
                 buttons={buttons}
             />
             <Modal open={show}
-                   title="Изменение новости"
+                   title="Изменение заявки"
                    onCancel={cancel}
                    centered={true}
                    footer={[
@@ -147,21 +172,44 @@ export default function Request(){
                    ]}>
                 <Form
                     form={form}
-                    id={"newsId"}
                     layout={"vertical"}
                     name="formRegistry"
                     style={{padding: 20}}>
                     <Form.Item
-                        name="requestName"
-                        label="Имя заявки"
+                        name="requestText"
+                        label="Текст заявки"
                         rules={[
                             {
                                 required: true,
-                                message: "Титул новости не может быть пустым"
+                                message: "Текст заявки не может быть пустым"
                             }
                         ]}>
-                        <Input name="requestName"
-                               placeholder="Титул новости"/>
+                        <Input name="requestText"
+                               placeholder="Текст заявки"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="serviceId"
+                        label="Услуга">
+                        <Select
+                            style={{ width: '100%' }}
+                            onClick={() => {
+                                if(serviceList.length === 0) {
+                                    requestToApi.post("/v1/apps/dnk/refbooks/service/getlist", {
+                                        namedFilters:[],
+                                        rowCount:100,
+                                        page:1,
+                                        orderBy:'serviceId'
+                                    })
+                                        .then(data => setServiceList(data.result));
+                                }
+                            }}
+                            options={serviceList.map((service) => {
+                                return {
+                                    label: service.serviceName,
+                                    value: service.serviceId
+                                }
+                            })}
+                        />
                     </Form.Item>
                 </Form>
             </Modal>
@@ -170,10 +218,10 @@ export default function Request(){
                 columns={columns}
                 loading={loading}
                 rowSelection={rowSelection}
-                rowKey={(record) => record.studyProgramId}
+                rowKey={(record) => record.requestId}
                 onRow={(record) => ({
                     onClick: () => {
-                        edit(record.newsId)
+                        edit(record.requestId)
                     },
                 })}
                 pagination={pagination}/>

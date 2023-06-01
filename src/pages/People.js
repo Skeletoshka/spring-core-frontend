@@ -7,14 +7,14 @@ import Dayjs from "dayjs";
 
 const columns = [
     {
-        title: "Имя",
-        dataIndex: "peopleName",
-        key: "peopleName"
-    },
-    {
         title: "Фамилия",
         dataIndex: "peopleLastName",
         key: "peopleLastName"
+    },
+    {
+        title: "Имя",
+        dataIndex: "peopleName",
+        key: "peopleName"
     },
     {
         title: "Отчество",
@@ -50,7 +50,7 @@ const GridDataOption = {
     namedFilters:[],
     rowCount:10,
     page:1,
-    orderBy:'peopleId',
+    orderBy:'peopleLastName',
     from:'peopleId'
 }
 
@@ -172,21 +172,10 @@ export default function People() {
                    ]}>
                 <Form
                     form={form}
+                    autoComplete={false}
                     layout={"vertical"}
                     name="formRegistry"
                     style={{padding: 20}}>
-                    <Form.Item
-                        name="peopleName"
-                        label="Имя"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Имя не может быть пустым"
-                            }
-                        ]}>
-                        <Input name="peopleName"
-                               placeholder="Имя"/>
-                    </Form.Item>
                     <Form.Item
                         name="peopleLastName"
                         label="Фамилия"
@@ -198,6 +187,18 @@ export default function People() {
                         ]}>
                         <Input name="peopleLastName"
                                placeholder="Фамилия"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="peopleName"
+                        label="Имя"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Имя не может быть пустым"
+                            }
+                        ]}>
+                        <Input name="peopleName"
+                               placeholder="Имя"/>
                     </Form.Item>
                     <Form.Item
                         name="peopleMiddleName"
@@ -251,14 +252,20 @@ export default function People() {
                     </Form.Item>
                     <Form.Item
                         name="peopleEmail"
-                        label="Электронный адрес">
+                        label="Электронный адрес"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Отчество не может быть пустым"
+                            }
+                        ]}>
                         <Input name="peopleEmail"
                                placeholder="Электронный адрес"/>
                     </Form.Item>
                     <Form.Item
                         name="peoplePhone"
                         label="Номер телефона">
-                        <Input name="peoplePhone"
+                        <Input name="peoplePhone" autoComplete="off"
                                placeholder="Номер телефона"/>
                     </Form.Item>
                 </Form>

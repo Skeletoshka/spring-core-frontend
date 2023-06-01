@@ -8,16 +8,18 @@ export default function LK(){
     const[people, setPeople] = useState(undefined)
     const[progUser, setProgUser] = useState(undefined)
     useEffect(() => {
-        requestToApi.post("/v1/apps/objects/proguser/get", localStorage.getItem("progUserId"))
-            .then(data => {
-                setProgUser(data)
-                if(data.peopleId !== null && data.peopleId !== undefined) {
-                    requestToApi.post("/v1/apps/dnk/objects/people/get", data.peopleId)
-                        .then(dataPeople => {
-                            setPeople(dataPeople)
-                        })
-                }
-            });
+        if(progUser === undefined) {
+            requestToApi.post("/v1/apps/objects/proguser/get", localStorage.getItem("progUserId"))
+                .then(data => {
+                    setProgUser(data)
+                    if (data.peopleId !== null && data.peopleId !== undefined) {
+                        requestToApi.post("/v1/apps/dnk/objects/people/get", data.peopleId)
+                            .then(dataPeople => {
+                                setPeople(dataPeople)
+                            })
+                    }
+                });
+        }
     })
 
     return <LK_Info progUser = {progUser} people = {people}/>
