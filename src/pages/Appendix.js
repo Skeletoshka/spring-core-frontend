@@ -3,8 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
-import {PlusOutlined} from "@ant-design/icons";
-import {useNavigate} from "react-router-dom";
+import {DownloadOutlined, PlusOutlined} from "@ant-design/icons";
 import fileSaver from "file-saver/dist/FileSaver";
 
 const GridDataOption = {
@@ -35,7 +34,6 @@ export default function Appendix() {
             reload();
         }
     })
-    const navigate = useNavigate()
 
     const columns = [
         {
@@ -104,7 +102,9 @@ export default function Appendix() {
             title: "",
             dataIndex: "download",
             key: "download",
-            render: (_, entity) => <Button href={entity.appendixPath}>Скачать</Button>
+            render: (_, entity) => <a href={process.env.PUBLIC_URL +
+                ("" + entity.appendixPath).replace(/.+public/, "")}
+                                      download={entity.appendixName}>Скачать</a>
         }
     ]
 
@@ -177,12 +177,6 @@ export default function Appendix() {
         requestToApi.postFile('/v1/apps/dnk/objects/appendix/upload?type=' + form.getFieldValue('documentTypeId'), formData)
             .then(() => reload());
     }
-
-    const dummyRequest = ({ file, onSuccess }) => {
-        setTimeout(() => {
-            onSuccess("ok");
-        }, 0);
-    };
 
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
