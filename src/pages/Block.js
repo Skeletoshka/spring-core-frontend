@@ -40,6 +40,16 @@ const GridDataOption = {
     orderBy:'blockId'
 }
 
+const GridDataOptionCapClass = {
+    namedFilters:[
+        {name:"capClassTypeId", value:3}
+    ],
+    rowCount:10,
+    page:1,
+    orderBy:'capClassId',
+    from:'capClass'
+}
+
 export default function Block() {
     const [blockList, setBlockList] = useState([])
     const [studyCaseList, setStudyCaseList] = useState([])
@@ -112,7 +122,6 @@ export default function Block() {
             values.blockId = entityId
             values.studyCaseId = id
             values.blockVisible = values.blockVisible?1:0;
-            values.capClassId = 3
             requestToApi.post("/v1/apps/dnk/studyprogram/block/save", values)
                 .then(data => {
                     reload()
@@ -173,10 +182,36 @@ export default function Block() {
                     <Form.Item
                         name = "blockDesc"
                         label = "Описание блока">
-                        <Input name = "blockDecs"
+                        <Input name = "blockDesc"
                                placeholder = "Описание блока"/>
                     </Form.Item>
-
+                    <Form.Item
+                        name = "capClassId"
+                        label = "Тип блока"
+                        rules = {[
+                            {
+                                required: true,
+                                message: "Классификатор Блока не может быть пустым"
+                            }
+                        ]}>
+                        <Select
+                            name = "capClassId"
+                            style={{ width: '100%' }}
+                            onClick={() => {
+                                if(capClassList.length === 0) {
+                                    requestToApi.post("/v1/apps/refbooks/capclass/getlist", GridDataOptionCapClass)
+                                        .then(data => {
+                                            setCapClassList(data)
+                                        });
+                                }
+                            }}
+                            options={capClassList?.map((capClass) => {
+                                return {
+                                    label: capClass.capClassName,
+                                    value: capClass.capClassId
+                                }
+                            })}/>
+                    </Form.Item>
                     <Form.Item
                         name = "blockNum"
                         label = "Номер блока"
@@ -212,6 +247,11 @@ export default function Block() {
                 rowSelection={rowSelection}
                 rowKey={(record) => record.blockId}
                 pagination={pagination}
+                onRow={(record) => ({
+                    onClick: () => {
+                        edit(record.blockId)
+                    },
+                })}
             />
 
         </div>
