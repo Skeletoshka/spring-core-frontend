@@ -115,7 +115,7 @@ export default function Auth(){
                                     message : "Пароль не может быть пустым"
                                 }
                             ]}>
-                                <Input name="password" onChange={(event) => {
+                                <Input.Password name="password" onChange={(event) => {
                                 RegistryEntity.password = event.target.value
                             }} placeholder="Пароль"/>
                         </Form.Item>

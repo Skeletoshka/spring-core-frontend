@@ -53,6 +53,11 @@ const Header = ()=>{
                     onClick: () => navigate("/lk/file")
                 },
                 {
+                    label: "Договора",
+                    key: "contracts",
+                    onClick: () => navigate("/lk/contract")
+                },
+                {
                     label: "Новости",
                     key: "news",
                     onClick: () => navigate("/lk/news")

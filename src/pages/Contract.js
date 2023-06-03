@@ -1,26 +1,53 @@
-import {Button, Modal, Table, Form, Input, Upload, Select} from 'antd';
-import { useForm } from 'antd/es/form/Form';
-import React, { useState, useEffect } from 'react';
-import {requestToApi} from '../components/Request';
+import React, {useEffect, useState} from "react";
+import {useForm} from "antd/es/form/Form";
+import {requestToApi} from "../components/Request";
+import {Button, DatePicker, Form, Input, Modal, Select, Table} from "antd";
 import PageHeader from "../components/PageHeader";
-import {DownloadOutlined, PlusOutlined} from "@ant-design/icons";
-import fileSaver from "file-saver/dist/FileSaver";
+import Dayjs from "dayjs";
+
+const columns = [
+    {
+        title: 'Имя документа',
+        dataIndex: 'documentRealName',
+        key: 'documentRealName'
+    },
+    {
+        title: 'Дата договора',
+        dataIndex: 'contractDate',
+        key: 'contractDate',
+        render: (value) => new Date(value).toLocaleDateString()
+    },
+    {
+        title:'Тип договора',
+        dataIndex: 'documentTypeName',
+        key: 'documentTypeName'
+    },
+    {
+        title: "",
+        dataIndex: "download",
+        key: "download",
+        render: (_, entity) => <a href={process.env.PUBLIC_URL +
+            ("" + entity.appendixPath).replace(/.+public/, "")}
+                                  download={entity.appendixName}>Скачать</a>
+    }
+]
 
 const GridDataOption = {
     namedFilters:[],
     rowCount:10,
     page:1,
-    orderBy:'appendixId'
+    orderBy:'contractId'
 }
 
-export default function Appendix() {
-    const [appendixList, setAppendixList] = useState([])
+export default function Contract(){
+
+    const [contractList, setContractList] = useState([]);
+    const [documentTypeList, setDocumentTypeList] = useState([]);
     const [file, setFile] = useState(new FormData());
-    const [documentTypeList, setDocumentTypeList] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [id, setId] = useState(undefined)
+    const [id, setId] = useState();
+    const [show, setShow] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const [show, setShow] = useState(false)
+    const [loading, setLoading] = useState(true);
     const [form] = useForm()
     const [pagination] = useState({
         current: 2,
@@ -36,44 +63,6 @@ export default function Appendix() {
         }
     })
 
-    const columns = [
-        {
-            title: "Наименование",
-            dataIndex: "appendixName",
-            key: "appendixName"
-        },
-        {
-            title: "Тип документа",
-            dataIndex: "documentTypeName",
-            key: "documentTypeName"
-        },
-        {
-            title: "Владелец",
-            dataIndex: "progUserName",
-            key: "progUserName"
-        },
-        {
-            title: "Дата создания",
-            dataIndex: "documentRealDateCreate",
-            key: "documentRealDateCreate",
-            render: (data) => new Date(data).toLocaleDateString()
-        },
-        {
-            title: "Дата модификации",
-            dataIndex: "documentRealDateModify",
-            key: "documentRealDateModify",
-            render: (data) => new Date(data).toLocaleDateString()
-        },
-        {
-            title: "",
-            dataIndex: "download",
-            key: "download",
-            render: (_, entity) => <a href={process.env.PUBLIC_URL +
-                ("" + entity.appendixPath).replace(/.+public/, "")}
-                                      download={entity.appendixName}>Скачать</a>
-        }
-    ]
-
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
@@ -83,11 +72,15 @@ export default function Appendix() {
         onChange:onSelectChange
     };
 
+    function cancel(){
+        setShow(false)
+    }
+
     useEffect(() => {
         if(loading) {
-            requestToApi.post("/v1/apps/document/appendix/getlist", GridDataOption)
+            requestToApi.post("/v1/apps/document/contract/getlist", GridDataOption)
                 .then(data => {
-                    setAppendixList(data.result);
+                    setContractList(data.result)
                     pagination.total = data.allRowCount;
                     pagination.current = data.page;
                     pagination.pageSize = data.rowCount;
@@ -97,22 +90,17 @@ export default function Appendix() {
     }, [loading])
 
     function reload(){
-        setLoading(true);
-    }
-
-    function cancel(){
-        setShow(false);
+        setLoading(true)
     }
 
     function edit(id){
-        requestToApi.post("/v1/apps/document/appendix/get", id)
+        requestToApi.post("/v1/apps/document/contract/get", id)
             .then(data => {
-                setId(data.appendixId)
+                setId(data.contractId)
                 form.setFields(Object.keys(data).map((key) => ({
                     name: key,
-                    value: data[key],
-                })));
-                form.setFieldValue("avatar", null)
+                    value: key==="contractDate"?Dayjs(data[key]):data[key]
+                })))
                 setShow(true)
             });
     }
@@ -121,14 +109,14 @@ export default function Appendix() {
         form.validateFields().then((values) => {
             let formData = new FormData();
             formData.append("multipartFile", file)
+            values.contractDate = new Date(values.contractDate).getTime()
             requestToApi.postFile('/v1/apps/document/appendix/upload', formData)
                 .then(data => {
                     values.appendixPath = data.url
-                    requestToApi.post("/v1/apps/document/appendix/save", values)
+                    values.contractId = id;
+                    requestToApi.post("/v1/apps/document/contract/save", values)
                         .then(data => {
                             reload()
-                            form.setFieldValue("documentTypeId", null)
-                            form.setFieldValue("appendixName", null)
                             setShow(false)
                         })
                 });
@@ -136,13 +124,13 @@ export default function Appendix() {
     }
 
     function deleteRows(){
-        requestToApi.post("/v1/apps/document/appendix/delete", selectedRowKeys)
+        requestToApi.post("/v1/apps/document/contract/delete", selectedRowKeys)
             .then(data => {
                 reload()
             })
     }
 
-    function onFileChangeHandler(e) {
+    function onFileChangeHandler(e){
         e.preventDefault();
         setFile(e.target.files[0]);
     }
@@ -153,19 +141,18 @@ export default function Appendix() {
         <Button onClick={() => edit(null)}>Добавить</Button>
     ]
 
-    return (
+    return(
         <div>
             <PageHeader
-                title={"Файлы"}
+                title={"Договор"}
                 buttons={buttons}
             />
-            <Modal open={show}
-                   title="Изменение файла"
+            <Modal open = {show}
+                   title="Изменение Договора"
                    onCancel={cancel}
-                   centered={true}
                    footer={[
                        <Button onClick={submit}>
-                           Добавить
+                           Сохранить
                        </Button>,
                        <Button onClick={cancel}>
                            Назад
@@ -174,16 +161,35 @@ export default function Appendix() {
                 <Form
                     form={form}
                     layout={"vertical"}
+                    centered={true}
+                    name="formRegistry"
                     style={{padding: 20}}>
                     <Form.Item
-                        name="documentTypeId"
-                        label="Тип документа"
+                        name="documentRealNumber"
+                        label="Номер договора"
                         rules={[
                             {
                                 required: true,
-                                message: "Тип документа договора не может быть пустым"
+                                message: "Номер договора не может быть пустым"
                             }
                         ]}>
+                        <Input name="documentRealNumber"
+                               placeholder="Номер договора"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="contractDate"
+                        label="Дата договора"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Дата договора не может быть пустым"
+                            }
+                        ]}>
+                        <DatePicker name="contractDate"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="documentTypeId"
+                        label="Тип документа">
                         <Select
                             style={{ width: '100%' }}
                             onClick={() => {
@@ -207,37 +213,40 @@ export default function Appendix() {
                     </Form.Item>
                     <Form.Item
                         name="appendixName"
-                        label="Название файла"
+                        label="Имя файла договора"
                         rules={[
                             {
                                 required: true,
-                                message: "Название файла договора не может быть пустым"
+                                message: "Имя файла договора не может быть пустым"
                             }
                         ]}>
                         <Input name="appendixName"
-                               placeholder="Название файла"/>
+                               placeholder="Имя файла договора"/>
                     </Form.Item>
                     <Form.Item
-                        name="avatar"
-                        label="Загрузка файла"
+                        name="appendixFile"
+                        label="Файл договора"
                         rules={[
                             {
                                 required: true,
-                                message: "Загрузка договора не может быть пустым"
+                                message: "Файл договора не может быть пустым"
                             }
                         ]}>
-                            <Input type={"file"} icon={<PlusOutlined/>} onChange={onFileChangeHandler}></Input>
+                        <Input name="appendixFile"
+                               placeholder="Файл договора"
+                               type={"file"}
+                               onChange={onFileChangeHandler}
+                        />
                     </Form.Item>
                 </Form>
             </Modal>
             <Table
-                dataSource={appendixList}
+                dataSource={contractList}
                 columns={columns}
                 loading={loading}
                 rowSelection={rowSelection}
-                rowKey={(record) => record.appendixId}
-                pagination={pagination}/>
+                pagination={pagination}
+                rowKey={(record) => record.contractId}/>
         </div>
     )
-
 }

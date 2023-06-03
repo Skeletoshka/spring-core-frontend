@@ -24,6 +24,7 @@ import PeopleWorkGroup from "./pages/PeopleWorkGroup";
 import Request from "./pages/Request";
 import {Menu, MenuProps} from "antd";
 import Appendix from "./pages/Appendix";
+import Contract from "./pages/Contract";
 
 class App extends Component {
   render() {
@@ -52,6 +53,7 @@ class App extends Component {
                   <Route path='/lk/workgroup/:id' element={<PeopleWorkGroup/>}/>
                   <Route path='/lk/request' element={<Request/>}/>
                   <Route path='/lk/file' element={<Appendix/>}/>
+                  <Route path='/lk/contract' element={<Contract/>}/>
                   <Route path='/news' element={<NewsPublic/>}/>
                   <Route path='/studyprogram' element={<StudyProgramPublic/>}/>
                   <Route path='/activity' element={<ActivityPublic/>}/>
