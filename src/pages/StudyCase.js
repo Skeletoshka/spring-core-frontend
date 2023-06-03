@@ -181,10 +181,9 @@ export default function StudyCase(){
                     <Form.Item
                         name = "studyCaseDesc"
                         label = "Описание раздела">
-                        <Input name = "studyCaseDecs"
+                        <Input name = "studyCaseDesc"
                                placeholder = "Описание раздела"/>
                     </Form.Item>
-
                     <Form.Item
                         name = "studyCaseNum"
                         label = "Номер раздела"
@@ -218,8 +217,13 @@ export default function StudyCase(){
                 columns={columns}
                 loading={loading}
                 rowSelection={rowSelection}
-                rowKey={(record) => record.studyСaseId}
+                rowKey={(record) => record.studyCaseId}
                 pagination={pagination}
+                onRow={(record) => ({
+                    onClick: () => {
+                        edit(record.studyCaseId)
+                    },
+                })}
             />
 
         </div>

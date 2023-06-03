@@ -26,8 +26,8 @@ const columns = [
     },
     {
         title: "Разделы",
-        dataIndex: "studycase",
-        key: "studycase",
+        dataIndex: "studyCase",
+        key: "studyCase",
         render: (_, entity) => {
             return <Link to={'/lk/studyprogram/studycase/' + entity.studyProgramId}>Просмотреть разделы</Link>
         }
