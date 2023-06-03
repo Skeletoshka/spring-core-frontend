@@ -87,6 +87,11 @@ const Header = ()=>{
                     label: "Люди",
                     key: "people",
                     onClick: () => {navigate("/lk/people")}
+                },
+                {
+                    label: "Партнёры",
+                    key: "companies",
+                    onClick: () => navigate("/lk/company")
                 }
             ]
         }
