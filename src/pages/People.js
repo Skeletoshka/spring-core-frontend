@@ -51,7 +51,12 @@ const columns = [
         render: (_, entity) => entity.parentLastName!==undefined&&entity.parentLastName!==null?
             entity.parentLastName + " " + entity.parentName.substring(0, 1) + ". "
             + entity.parentMiddleName.substring(0, 1) + "." :""
-    }
+    },
+    {
+        title: "Партнёр",
+        dataIndex: "companyName",
+        key: "companyName"
+    },
 ]
 
 const GridDataOption = {
@@ -74,6 +79,7 @@ const GridDataOptionCapClass = {
 
 export default function People() {
     const [peopleList, setPeopleList] = useState([])
+    const [companyList, setCompanyList] = useState([])
     const [capClassList, setCapClassList] = useState([])
     const [parentList, setParentList] = useState([])
     const [childList, setChildList] = useState([])
@@ -389,6 +395,29 @@ export default function People() {
                         label="Номер телефона">
                         <Input name="peoplePhone" autoComplete="off"
                                placeholder="Номер телефона"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="companyId"
+                        label="Партнёр">
+                        <Select
+                            style={{ width: '100%' }}
+                            onClick={() => {
+                                if(companyList.length === 0) {
+                                    requestToApi.post("/v1/apps/contragent/company/getlist", {
+                                        rowCount:10,
+                                        page:1,
+                                        orderBy:'companyId'
+                                    })
+                                        .then(data => setCompanyList(data.result));
+                                }
+                            }}
+                            options={companyList.map((company) => {
+                                return {
+                                    label: company.companyName,
+                                    value: company.companyId
+                                }
+                            })}
+                        />
                     </Form.Item>
                 </Form>
             </Modal>
