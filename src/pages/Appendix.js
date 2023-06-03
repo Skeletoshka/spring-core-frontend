@@ -69,7 +69,7 @@ export default function Appendix() {
             dataIndex: "download",
             key: "download",
             render: (_, entity) => <a href={process.env.PUBLIC_URL +
-                ("" + entity.appendixPath).replace(/.+public/, "")}
+                ("" + entity.appendixPath).replace(/.+frontend/, "")}
                                       download={entity.appendixName}>Скачать</a>
         }
     ]
