@@ -26,6 +26,11 @@ const Header = ()=>{
                             onClick: () => navigate("/lk/studyprogram")
                         },
                         {
+                            label: "Направления",
+                            key: "direction",
+                            onClick: () => navigate("/lk/direction")
+                        },
+                        {
                             label: "Расписание",
                             key: "schedule",
                             onClick: () => navigate("/lk/schedule")
@@ -46,6 +51,11 @@ const Header = ()=>{
                     label: "Файлы",
                     key: "files",
                     onClick: () => navigate("/lk/file")
+                },
+                {
+                    label: "Новости",
+                    key: "news",
+                    onClick: () => navigate("/lk/news")
                 }
             ],
         },

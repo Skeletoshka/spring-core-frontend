@@ -39,64 +39,29 @@ export default function Appendix() {
         {
             title: "Наименование",
             dataIndex: "appendixName",
-            key: "appendixName",
-            onCell: record => {
-                return {
-                    onClick: () => {
-                        edit(record.appendixId)
-                    }
-                }
-            }
+            key: "appendixName"
         },
         {
             title: "Тип документа",
             dataIndex: "documentTypeName",
-            key: "documentTypeName",
-            onCell: record => {
-                return {
-                    onClick: () => {
-                        edit(record.appendixId)
-                    }
-                }
-            }
+            key: "documentTypeName"
         },
         {
             title: "Владелец",
             dataIndex: "progUserName",
-            key: "progUserName",
-            onCell: record => {
-                return {
-                    onClick: () => {
-                        edit(record.appendixId)
-                    }
-                }
-            }
+            key: "progUserName"
         },
         {
             title: "Дата создания",
             dataIndex: "documentRealDateCreate",
             key: "documentRealDateCreate",
-            render: (data) => new Date(data).toLocaleDateString(),
-            onCell: record => {
-                return {
-                    onClick: () => {
-                        edit(record.appendixId)
-                    }
-                }
-            }
+            render: (data) => new Date(data).toLocaleDateString()
         },
         {
             title: "Дата модификации",
             dataIndex: "documentRealDateModify",
             key: "documentRealDateModify",
-            render: (data) => new Date(data).toLocaleDateString(),
-            onCell: record => {
-                return {
-                    onClick: () => {
-                        edit(record.appendixId)
-                    }
-                }
-            }
+            render: (data) => new Date(data).toLocaleDateString()
         },
         {
             title: "",
@@ -173,9 +138,13 @@ export default function Appendix() {
         let formData;
         formData = new FormData();
         formData.append('multipartFile', e.target.files[0]);
-        console.log(formData)
-        requestToApi.postFile('/v1/apps/dnk/objects/appendix/upload?type=' + form.getFieldValue('documentTypeId'), formData)
+        requestToApi.postFile('/v1/apps/dnk/objects/appendix/upload?type=' + form.getFieldValue('documentTypeId') +
+            (form.getFieldValue("appendixName")!==null&&form.getFieldValue("appendixName")!==undefined?
+                "&file_name="+form.getFieldValue("appendixName"):""), formData)
             .then(() => reload());
+        setShow(false)
+        form.setFieldValue("documentTypeId", null)
+        form.setFieldValue("appendixName", null)
     }
 
     let buttons = [
@@ -229,6 +198,12 @@ export default function Appendix() {
                                 }
                             })}
                         />
+                    </Form.Item>
+                    <Form.Item
+                        name="appendixName"
+                        label="Название файла">
+                        <Input name="appendixName"
+                               placeholder="Название файла"/>
                     </Form.Item>
                     <Form.Item
                         name="avatar"
