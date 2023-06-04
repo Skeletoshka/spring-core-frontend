@@ -304,7 +304,13 @@ export default function Student() {
                     </Form.Item>
                     <Form.Item
                         name="companyId"
-                        label="Партнёр">
+                        label="Школа"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Школа не может быть пустой"
+                            }
+                        ]}>
                         <Select
                             style={{ width: '100%' }}
                             onClick={() => {
