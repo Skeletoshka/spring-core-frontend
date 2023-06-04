@@ -234,9 +234,9 @@ export default function Student() {
                                                 value: 8
                                             }
                                         ],
-                                        rowCount:10,
+                                        rowCount:100,
                                         page:1,
-                                        orderBy:'peopleId'
+                                        orderBy:'peopleLastName'
                                     })
                                         .then(data => setParentList(data.result));
                                 }
@@ -269,9 +269,9 @@ export default function Student() {
                                                 value: 4
                                             }
                                         ],
-                                        rowCount:10,
+                                        rowCount:100,
                                         page:1,
-                                        orderBy:'peopleId'
+                                        orderBy:'peopleLastName'
                                     })
                                         .then(data => setChildList(data.result));
                                 }
