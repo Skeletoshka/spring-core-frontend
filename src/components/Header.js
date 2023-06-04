@@ -61,6 +61,11 @@ const Header = ()=>{
                     label: "Новости",
                     key: "news",
                     onClick: () => navigate("/lk/news")
+                },
+                {
+                    label: "Отчёт",
+                    key: "report",
+                    onClick: () => navigate("/lk/people/report")
                 }
             ],
         },
@@ -131,7 +136,7 @@ const Header = ()=>{
     ]
 
     return(
-        <div>
+        <div style={{backgroundColor: "orange"}}>
             <Menu mode={"horizontal"} items={requestToApi.isAuthUser()?items:itemsPublic} style={{backgroundColor: "orange"}}/>
         </div>
     )

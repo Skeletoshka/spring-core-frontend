@@ -43,6 +43,7 @@ div{
   background-image: url("./img/background.png");
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: auto;
 }
 
 .authFormMiddle {
@@ -58,6 +59,7 @@ div{
 
 :root{
   background-color: rgb(255, 255, 255);
+  width: 100%;
 }
 
 .pageHeaderDiv{

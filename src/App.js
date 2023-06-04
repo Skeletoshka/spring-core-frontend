@@ -27,6 +27,7 @@ import Appendix from "./pages/Appendix";
 import Contract from "./pages/Contract";
 import Company from "./pages/Company";
 import Student from "./pages/Students";
+import Report from "./pages/Report";
 
 class App extends Component {
   render() {
@@ -48,6 +49,7 @@ class App extends Component {
                   <Route path='/lk/studyprogram/studycase/block/:id' element={<Block/>}/>
                   <Route path='/lk/direction' element={<Direction/>}/>
                   <Route path='/lk/people' element={<People/>}/>
+                  <Route path='/lk/people/report' element={<Report/>}/>
                   <Route path='/lk/people/student' element={<Student/>}/>
                   <Route path='/lk/activity' element={<Activity/>}/>
                   <Route path='/lk/news' element={<News/>}/>

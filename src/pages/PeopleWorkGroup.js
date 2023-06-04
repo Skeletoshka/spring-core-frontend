@@ -172,7 +172,12 @@ export default function PeopleWorkGroup(){
                             onClick={() => {
                                 if(peopleListSelect.length === 0) {
                                     requestToApi.post("/v1/apps/dnk/objects/people/getlist", {
-                                        namedFilters:[],
+                                        namedFilters:[
+                                            {
+                                                name: "capClassId",
+                                                value: 4
+                                            }
+                                        ],
                                         rowCount:100,
                                         page:1,
                                         orderBy:'peopleId'
