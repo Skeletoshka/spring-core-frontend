@@ -81,15 +81,11 @@ export default function People() {
     const [peopleList, setPeopleList] = useState([])
     const [companyList, setCompanyList] = useState([])
     const [capClassList, setCapClassList] = useState([])
-    const [parentList, setParentList] = useState([])
-    const [childList, setChildList] = useState([])
     const [id, setId] = useState()
     const [loading, setLoading] = useState(true)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [show, setShow] = useState(false)
-    const [showFamily, setShowFamily] = useState(false)
     const [form] = useForm()
-    const [formFamily] = useForm()
     const [pagination] = useState({
         current: 2,
         pageSize: 10,
@@ -132,7 +128,6 @@ export default function People() {
 
     function cancel(){
         setShow(false)
-        setShowFamily(false)
     }
 
     function edit(id){
@@ -159,22 +154,6 @@ export default function People() {
         })
     }
 
-    function editFamily(){
-        setShowFamily(true)
-    }
-
-    function submitFamily(){
-        formFamily.validateFields().then((values) => {
-            requestToApi.post("/v1/apps/dnk/objects/people/bind", values)
-                .then(data => {
-                    reload()
-                    setShowFamily(false)
-                    formFamily.setFieldValue("parentId", null)
-                    formFamily.setFieldValue("childId", null)
-                })
-        })
-    }
-
     function deleteRows(){
         requestToApi.post("/v1/apps/dnk/objects/people/delete", selectedRowKeys)
             .then(data => {
@@ -185,8 +164,7 @@ export default function People() {
     let buttons = [
         <Button onClick={deleteRows}>Удалить</Button>,
         <Button onClick={reload}>Обновить</Button>,
-        <Button onClick={() => edit(null)}>Добавить</Button>,
-        <Button onClick={() => editFamily()}>Создать семью</Button>
+        <Button onClick={() => edit(null)}>Добавить</Button>
     ]
 
     return (
@@ -195,97 +173,6 @@ export default function People() {
                 title={"Люди"}
                 buttons={buttons}
             />
-            <Modal open={showFamily}
-                   title="Изменение семьи"
-                   onCancel={cancel}
-                   centered={true}
-                   footer={[
-                       <Button onClick={submitFamily}>
-                           Добавить
-                       </Button>,
-                       <Button onClick={cancel}>
-                           Назад
-                       </Button>
-                   ]}>
-                <Form
-                    form={formFamily}
-                    autoComplete={false}
-                    layout={"vertical"}
-                    name="formRegistry"
-                    style={{padding: 20}}
-                >
-                    <Form.Item
-                        name="parentId"
-                        label="Родитель"
-                        rules={[
-                            {
-                                required: true,
-                                message : "Родитель не может отсутствовать"
-                            }
-                        ]}>
-                        <Select
-                            style={{ width: '100%' }}
-                            onClick={() => {
-                                if(parentList.length === 0) {
-                                    requestToApi.post("/v1/apps/dnk/objects/people/getlist", {
-                                        namedFilters:[
-                                            {
-                                                name:"capClassId",
-                                                value: 8
-                                            }
-                                        ],
-                                        rowCount:10,
-                                        page:1,
-                                        orderBy:'peopleId'
-                                    })
-                                        .then(data => setParentList(data.result));
-                                }
-                            }}
-                            options={parentList.map((people) => {
-                                return {
-                                    label: people.peopleLastName + " " + people.peopleName.substring(0, 1) + ". " + people.peopleMiddleName.substring(0, 1) + ".",
-                                    value: people.peopleId
-                                }
-                            })}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="childId"
-                        label="Ребенок"
-                        rules={[
-                            {
-                                required: true,
-                                message : "Ребенок не может отсутствовать"
-                            }
-                        ]}>
-                        <Select
-                            style={{ width: '100%' }}
-                            onClick={() => {
-                                if(childList.length === 0) {
-                                    requestToApi.post("/v1/apps/dnk/objects/people/getlist", {
-                                        namedFilters:[
-                                            {
-                                                name:"capClassId",
-                                                value: 4
-                                            }
-                                        ],
-                                        rowCount:10,
-                                        page:1,
-                                        orderBy:'peopleId'
-                                    })
-                                        .then(data => setChildList(data.result));
-                                }
-                            }}
-                            options={childList.map((people) => {
-                                return {
-                                    label: people.peopleLastName + " " + people.peopleName.substring(0, 1) + ". " + people.peopleMiddleName.substring(0, 1) + ".",
-                                    value: people.peopleId
-                                }
-                            })}
-                        />
-                    </Form.Item>
-                </Form>
-            </Modal>
             <Modal open={show}
                    title="Изменение людей"
                    onCancel={cancel}
