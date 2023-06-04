@@ -27,7 +27,7 @@ const columns = [
         dataIndex: "download",
         key: "download",
         render: (_, entity) => <a href={process.env.PUBLIC_URL +
-            ("" + entity.appendixPath).replace(/.+files/, "")}
+            ("" + entity.appendixPath).replace(/.+frontend/, "")}
                                   download={entity.appendixName}>Скачать</a>
     }
 ]
