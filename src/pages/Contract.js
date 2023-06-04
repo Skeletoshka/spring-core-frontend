@@ -189,7 +189,13 @@ export default function Contract(){
                     </Form.Item>
                     <Form.Item
                         name="documentTypeId"
-                        label="Тип документа">
+                        label="Тип документа"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Тип документа не может быть пустым"
+                            }
+                        ]}>
                         <Select
                             style={{ width: '100%' }}
                             onClick={() => {
