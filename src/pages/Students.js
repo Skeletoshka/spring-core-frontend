@@ -132,7 +132,7 @@ export default function Student() {
 
     function cancel(){
         setShow(false)
-        setShowFamily(true)
+        setShowFamily(false)
     }
 
     function edit(id){
