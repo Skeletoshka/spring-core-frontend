@@ -89,6 +89,11 @@ const Header = ()=>{
                     onClick: () => {navigate("/lk/people")}
                 },
                 {
+                    label: "Ученики",
+                    key: "student",
+                    onClick: () => navigate("/lk/people/student")
+                },
+                {
                     label: "Партнёры",
                     key: "companies",
                     onClick: () => navigate("/lk/company")
