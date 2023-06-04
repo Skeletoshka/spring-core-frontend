@@ -39,6 +39,11 @@ const Header = ()=>{
                             label: "Группы",
                             key: "workgroup",
                             onClick: () => navigate("/lk/workgroup")
+                        },
+                        {
+                            label: "Активности",
+                            key: "activity",
+                            onClick: () => navigate("/lk/activity")
                         }
                     ]
                 },

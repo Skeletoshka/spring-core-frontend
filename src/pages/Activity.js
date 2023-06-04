@@ -25,16 +25,6 @@ const columns = [
         key: "directionName"
     },
     {
-        title: "Адрес",
-        dataIndex: "address",
-        key: "address",
-        render: (_, entity) => {
-            return "г. " + entity.townName + ", ул. " + entity.streetName + ", д. " + entity.addressHouse
-                + (entity.addressLitera!==null?entity.addressLitera:"")
-                + (entity.addressCorpus!==null?"к." + entity.addressCorpus:"")
-        }
-    },
-    {
         title: "Партнёр",
         dataIndex: "companyName",
         key: "companyName"
@@ -189,28 +179,6 @@ export default function Activity(){
                             }
                         ]}>
                         <DatePicker name="activityDate"/>
-                    </Form.Item>
-                    <Form.Item
-                        name="addressId"
-                        label="Адрес">
-                        <Select
-                            style={{ width: '100%' }}
-                            showSearch={true}
-                            onSearch={(text) => {
-                                if(text.length > 3) {
-                                    requestToApi.post("/v1/apps/refbooks/address/find", text)
-                                        .then(data => setAddressList(data));
-                                }
-                            }}
-                            options={addressList?.map((address) => {
-                                return {
-                                    label: "г. " + address.townName + ", ул. " + address.streetName + ", д. " + address.addressHouse
-                                        + (address.addressLitera!==null?address.addressLitera:"")
-                                        + (address.addressCorpus!==null?"к." + address.addressCorpus:""),
-                                    value: address.addressId
-                                }
-                            })}
-                        />
                     </Form.Item>
                     <Form.Item
                         name="directionId"
