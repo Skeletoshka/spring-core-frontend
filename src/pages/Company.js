@@ -230,7 +230,7 @@ export default function Company() {
                             onClick={() => {
                                 if(contractList.length === 0) {
                                     requestToApi.post("/v1/apps/document/contract/getlist", {
-                                        rowCount:10,
+                                        rowCount:100,
                                         page:1,
                                         orderBy:'contractId'
                                     })

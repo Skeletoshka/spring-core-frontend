@@ -231,13 +231,7 @@ export default function Proguser(){
                         </Form.Item>
                         <Form.Item
                             name="peopleId"
-                            label="Человек для пользователя"
-                            rules={[
-                                {
-                                    required: true,
-                                    message : "Человек не может быть пустыми"
-                                }
-                            ]}>
+                            label="Человек для пользователя">
                             <Select
                                 style={{ width: '100%' }}
                                 onClick={() => {

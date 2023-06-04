@@ -192,13 +192,7 @@ export default function Activity(){
                     </Form.Item>
                     <Form.Item
                         name="addressId"
-                        label="Адрес"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Дата события не может быть пустой"
-                            }
-                        ]}>
+                        label="Адрес">
                         <Select
                             style={{ width: '100%' }}
                             showSearch={true}
@@ -235,7 +229,7 @@ export default function Activity(){
                                     requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist",
                                         {
                                                 namedFilters:[],
-                                                rowCount:10,
+                                                rowCount:100,
                                                 page:1,
                                                 orderBy:'directionName'
                                             })
@@ -260,7 +254,7 @@ export default function Activity(){
                                     requestToApi.post("/v1/apps/contragent/company/getlist",
                                         {
                                             namedFilters:[],
-                                            rowCount:10,
+                                            rowCount:100,
                                             page:1,
                                             orderBy:'companyName'
                                         })
@@ -292,7 +286,7 @@ export default function Activity(){
                                     requestToApi.post("/v1/apps/refbooks/capclass/getlist",
                                         {
                                             namedFilters:[{name:"capClassTypeId", value:2}],
-                                            rowCount:10,
+                                            rowCount:100,
                                             page:1,
                                             orderBy:'capclassName'
                                         })

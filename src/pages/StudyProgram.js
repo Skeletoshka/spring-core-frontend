@@ -209,7 +209,7 @@ export default function StudyProgram(){
                                     if(directionList.length === 0) {
                                         requestToApi.post("/v1/apps/dnk/refbooks/direction/getlist", {
                                             namedFilters:[],
-                                            rowCount:10,
+                                            rowCount:100,
                                             page:1,
                                             orderBy:'directionId'
                                         })
@@ -244,7 +244,7 @@ export default function StudyProgram(){
                                                     value: 1
                                                 }
                                             ],
-                                            rowCount:10,
+                                            rowCount:100,
                                             page:1,
                                             orderBy:'peopleId'
                                         })
@@ -273,7 +273,7 @@ export default function StudyProgram(){
                                                     value: 11
                                                 }
                                             ],
-                                            rowCount:10,
+                                            rowCount:100,
                                             page:1,
                                             orderBy:'studyProgramId'
                                         })

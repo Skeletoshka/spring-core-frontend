@@ -404,7 +404,7 @@ export default function People() {
                             onClick={() => {
                                 if(companyList.length === 0) {
                                     requestToApi.post("/v1/apps/contragent/company/getlist", {
-                                        rowCount:10,
+                                        rowCount:100,
                                         page:1,
                                         orderBy:'companyId'
                                     })
