@@ -123,7 +123,7 @@ export default function Schedule() {
             dataIndex: "attendance",
             key: "attendance",
             render: (_, entity) => {
-                return <Button onClick={() => editAttendance(entity.scheduleId)}>Заполнить посещаемость</Button>
+                return <Button onClick={() => editAttendance(entity.scheduleId, entity.workGroupId)}>Заполнить посещаемость</Button>
             }
         }
     ]
@@ -176,22 +176,10 @@ export default function Schedule() {
             });
     }
 
-    function editAttendance(id){
-        setId(id)
+    function editAttendance(scheduleId, workGroupId){
+        setId(scheduleId)
         peoples = []
         cancel()
-        let workGroupId = scheduleList?.map(schedule => {
-            if (schedule.scheduleId === id){
-                return schedule.workGroupId
-            }
-        }).pop()
-        if(workGroupId === undefined){
-            workGroupId = scheduleList?.map(schedule => {
-                if (schedule.scheduleId === id){
-                    return schedule.workGroupId
-                }
-            }).at(0)
-        }
         requestToApi.post("/v1/apps/dnk/objects/attendance/getlist", {
             namedFilters: [
                 {
@@ -200,7 +188,7 @@ export default function Schedule() {
                 },
                 {
                     name: "scheduleId",
-                    value: id
+                    value: scheduleId
                 }
             ],
             rowCount: 100,

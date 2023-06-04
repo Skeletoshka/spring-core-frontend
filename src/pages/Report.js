@@ -29,7 +29,7 @@ const columns = [
         dataIndex: "people",
         key: "peopleId",
         width: 300,
-        render: (_, entity) => entity.parentLastName + " " + entity.parentName + " " + entity.parentMiddleName
+        render: (_, entity) => entity.peopleLastName + " " + entity.peopleName + " " + entity.peopleMiddleName
     },
     {
         title: "Дата рождения",
