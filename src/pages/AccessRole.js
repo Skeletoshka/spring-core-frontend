@@ -2,7 +2,9 @@ import { Button, Modal, Table, Form, Input } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
+import {CheckOutlined} from '@ant-design/icons'
 import PageHeader from "../components/PageHeader";
+import CheckBox from '../components/Checkbox';
 
 const columns = [
     {
@@ -14,14 +16,23 @@ const columns = [
         title:'Полное имя роли',
         dataIndex:'accessRoleFullName',
         key:'accessRoleFullName'
+    },
+    {
+        title: 'Видимость',
+        dataIndex: 'accessRoleVisible',
+        key: 'accessRoleVisible',
+        render: (accessRoleVisible) => {
+            if (accessRoleVisible===1){
+                return <span><CheckOutlined/></span>
+            }
+        }
     }
 ]
 
 const GridDataOption = {
     rowCount:10,
     page:1,
-    orderBy:'accessRoleId',
-    from:'accessrole'
+    orderBy:'accessRoleId'
 }
 
 export default function AccessRole(){
@@ -80,10 +91,12 @@ export default function AccessRole(){
         requestToApi.post("/v1/apps/refbooks/accessrole/get", id)
             .then(data => {
                 setId(data.accessRoleId)
-                form.setFields(Object.keys(data).map((key) => ({
-                    name: key,
-                    value: data[key],
-                })))
+                form.setFields(Object.keys(data).map((key) => (
+                    {
+                        name: key,
+                        value: data[key],
+                    }
+                )))
                 setShow(true)
             });
     }
@@ -91,6 +104,8 @@ export default function AccessRole(){
     function submit(){
         form.validateFields().then((values) => {
             values.accessRoleId = id;
+            console.log(values)
+            values.accessRoleVisible = values.accessRoleVisible.target.checked?1:0
             requestToApi.post("/v1/apps/refbooks/accessrole/save", values)
                 .then(data => {
                     reload()
@@ -131,6 +146,7 @@ export default function AccessRole(){
             ]}>
                 <Form
                     form={form}
+                    key={id}
                     layout={"vertical"}
                     centered={true}
                     name="formRegistry"
@@ -152,6 +168,22 @@ export default function AccessRole(){
                             label="Полное имя роли">
                             <Input name="accessRoleFullName"
                             placeholder="Полное имя роли" />
+                        </Form.Item>
+                        <Form.Item
+                            name="accessRoleVisible"
+                            label="Видимость роли">
+                            <CheckBox 
+                                name="accessRoleVisible"
+                                placeholder="Видимость роли"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Видимость роли не может быть пустой"
+                                    }
+                                ]}
+                                text="Видна ли роль пользователю"
+                                onChange={(e) => {console.log(e.target.checked)}}
+                            />
                         </Form.Item>
                 </Form>
             </Modal>
