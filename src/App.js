@@ -31,7 +31,6 @@ import Report from "./pages/Report";
 
 class App extends Component {
   render() {
-      document.body.style = 'background: #61dafb;';
     return (
         <div id='main'>
             <BrowserRouter>

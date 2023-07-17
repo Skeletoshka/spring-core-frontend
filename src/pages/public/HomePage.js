@@ -1,11 +1,15 @@
-import React from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect } from "react";
 import {requestToApi} from "../../components/Request";
 import NewsPublic from "./News";
 
 export default function HomePage() {
-    const navigate = useNavigate()
-    requestToApi.clearUserDetails()
+    useEffect(() => {
+        if(requestToApi.isAuthUser()){
+            requestToApi.clearUserDetails()
+            window.location.reload()
+        }
+    })
+
     return (
         <div>
             <NewsPublic/>
