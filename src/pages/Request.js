@@ -189,7 +189,13 @@ export default function Request(){
                     </Form.Item>
                     <Form.Item
                         name="serviceId"
-                        label="Услуга">
+                        label="Услуга"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Услуга не может быть пустой"
+                            }
+                        ]}>
                         <Select
                             style={{ width: '100%' }}
                             onClick={() => {

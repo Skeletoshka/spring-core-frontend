@@ -170,7 +170,7 @@ export default function Schedule() {
                 setId(data.scheduleId)
                 form.setFields(Object.keys(data).map((key) => ({
                     name: key,
-                    value: key==="scheduleDate"?Dayjs(data[key]):data[key],
+                    value: key==="scheduleDate"&&data[key]!==null?Dayjs(data[key]):data[key],
                 })))
                 setShow(true)
             });
@@ -369,7 +369,13 @@ export default function Schedule() {
                     </Form.Item>
                     <Form.Item
                         name="schedulePlace"
-                        label="Кабинет">
+                        label="Кабинет"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Кабинет не может быть пустой"
+                            }
+                        ]}>
                         <Input name="schedulePlace"
                                placeholder="Кабинет"/>
                     </Form.Item>

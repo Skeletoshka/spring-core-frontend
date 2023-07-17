@@ -196,18 +196,6 @@ export default function News() {
                                   }}
                                placeholder="Текст новости"/>
                     </Form.Item>
-                    <Form.Item
-                        name="documentRealNumber"
-                        label="Номер документа новости"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Номер документа новости не может быть пустым"
-                            }
-                        ]}>
-                        <Input name="documentRealNumber"
-                               placeholder="Номер документа новости"/>
-                    </Form.Item>
                 </Form>
             </Modal>
             <Table
