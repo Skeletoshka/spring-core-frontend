@@ -10,6 +10,9 @@ const PageHeader = (source) => {
                 <Button icon={<ArrowLeftOutlined/>} onClick={() => navigate(-1)}/>
                 <div className={"titleH1"}><b>{source.title}</b></div>
             </div>
+            <div className={"filters"}>
+                {source.filters}
+            </div>
             <div className={"titleButtons"}>{source.buttons}</div>
         </div>
     )

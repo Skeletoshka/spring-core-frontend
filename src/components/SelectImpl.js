@@ -4,17 +4,21 @@ import React from 'react';
 const SelectImpl = (source)=>{
     return(
         <Select 
+            defaultActiveFirstOption = {true}
+            value = {source.value}
+            allowClear = {true}
             name={source.name}
             placeholder={source.placeholder}
             rules={source.rules}
             onChange={source.onChange}
             onClick={source.onClick}
             options={source.options}
-            defaultValue={{
+            defaultValue={source.value!==undefined?{
                 value: source.value,
-                lavel: source.label
-            }}
-            
+                label: source.label
+            }:undefined}
+            style={source.style}
+            className={source.className}
         />
     )
 }
