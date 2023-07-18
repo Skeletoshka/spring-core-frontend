@@ -1,4 +1,5 @@
-import {Button, Form, Input, Modal, Select, Table} from 'antd';
+import {Button, Form, Input, Modal, Table} from 'antd';
+import Select from '../components/SelectImpl';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";

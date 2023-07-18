@@ -1,9 +1,10 @@
-import { Button, Modal, Table, Form, Input, Select } from 'antd';
+import { Button, Modal, Table, Form, Input } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
 import {Link} from "react-router-dom";
+import Select from '../components/SelectImpl';
 
 const columns = [
     {

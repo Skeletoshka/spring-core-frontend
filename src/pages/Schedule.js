@@ -1,8 +1,9 @@
-import {Button, Modal, Table, Form, Input, DatePicker, Select, Checkbox} from 'antd';
+import {Button, Modal, Table, Form, Input, DatePicker, Checkbox} from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
 import PageHeader from "../components/PageHeader";
+import Select from '../components/SelectImpl';
 import Dayjs from "dayjs";
 
 let peoples = []
@@ -77,6 +78,21 @@ export default function Schedule() {
                         edit(record.scheduleId)
                     }
                 }
+            }
+        },
+        {
+            title: "Преподаватель",
+            dataIndex: "teacherName",
+            key: "teacherName",
+            onCell: record => {
+                return {
+                    onClick: () => {
+                        edit(record.scheduleId)
+                    }
+                }
+            },
+            render: (_, entity) => {
+                return entity.peopleLastName + " " + entity.peopleName.substring(0, 1) + ". " + entity.peopleMiddleName.substring(0, 1) + "."
             }
         },
         {
@@ -262,6 +278,7 @@ export default function Schedule() {
                    ]}>
                 <Form
                     form={formAttendance}
+                    key={id}
                     layout={"vertical"}
                     name="formRegistry"
                     style={{padding: 20}}>
@@ -289,6 +306,7 @@ export default function Schedule() {
                    ]}>
                 <Form
                     form={form}
+                    key={id}
                     layout={"vertical"}
                     name="formRegistry"
                     style={{padding: 20}}>

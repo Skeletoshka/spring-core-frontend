@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useForm} from "antd/es/form/Form";
 import {requestToApi} from "../components/Request";
-import {Button, DatePicker, Form, Input, Modal, Select, Table} from "antd";
+import {Button, DatePicker, Form, Input, Modal, Table} from "antd";
+import Select from '../components/SelectImpl';
 import PageHeader from "../components/PageHeader";
 import Dayjs from "dayjs";
 

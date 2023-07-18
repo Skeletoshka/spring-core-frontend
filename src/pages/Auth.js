@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, Select, Modal } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
+import Select from '../components/SelectImpl';
 import {requestToApi} from '../components/Request';
 import {useNavigate} from "react-router-dom";
 import { useForm } from 'antd/es/form/Form';

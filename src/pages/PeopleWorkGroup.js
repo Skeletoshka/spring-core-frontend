@@ -1,4 +1,5 @@
-import {Button, Modal, Table, Form, Select} from 'antd';
+import {Button, Modal, Table, Form} from 'antd';
+import Select from '../components/SelectImpl';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
 import {requestToApi} from '../components/Request';
