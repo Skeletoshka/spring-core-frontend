@@ -117,3 +117,16 @@ div{
   line-height: 30px;
   padding-left: 20px;
 }
+
+.filters{
+  width: 70%;
+  float: left;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.filter{
+  margin-left: 0.5em;
+  width: 15%;
+}
