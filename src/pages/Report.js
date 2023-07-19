@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {useForm} from "antd/es/form/Form";
 import {requestToApi} from "../components/Request";
 import PageHeader from "../components/PageHeader";
-import {Button, DatePicker, Form, Input, Modal, Select, Table} from "antd";
+import {Button, Table} from "antd";
+import SelectImpl from '../components/SelectImpl';
 
 const columns = [
     {
@@ -50,12 +50,6 @@ const columns = [
         },
     },
     {
-        title: "Муниципальное образование",
-        dataIndex: "studentMun",
-        key: "studentMun",
-        width: 250,
-    },
-    {
         title: "Образовательная организация",
         dataIndex: "companyName",
         key: "companyName",
@@ -83,23 +77,11 @@ const columns = [
         }
     },
     {
-        title: "Номер телефона учащегося",
-        dataIndex: "peoplePhone",
-        key: "peoplePhone",
-        width: 200,
-    },
-    {
         title: "Фамилия, Имя, Отчество родителя",
         dataIndex: "parentId",
         key: "parentId",
         width: 300,
         render: (_, entity) => entity.parentLastName + " " + entity.parentName + " " + entity.parentMiddleName
-    },
-    {
-        title: "Номер телефона родителя",
-        dataIndex: "parentPhone",
-        key: "parentPhone",
-        width: 200,
     },
     {
         title: "Электронная почта родителя",
@@ -120,6 +102,9 @@ export default function Report(){
     const [reportList, setReportList] = useState([])
     const [loading, setLoading] = useState(true)
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [spList, setSpList] = useState([])
+    const [companyList, setCompanyList] = useState([])
+    const [workgroupList, setWorkgroupList] = useState([])
     const [pagination] = useState({
         current: 2,
         pageSize: 10,
@@ -133,6 +118,118 @@ export default function Report(){
             reload();
         }
     })
+
+    let filters = [
+        <SelectImpl 
+            placeholder={"Образовательная организация"}
+            className={"filter"}
+            key={"company"}
+            onClick={() => {
+                if (companyList.length === 0){
+                    requestToApi.post("/v1/apps/contragent/company/getlist", {
+                        namedFilters:[],
+                        rowCount:100,
+                        page:1,
+                        orderBy:'companyName'
+                    })
+                        .then((data) => {
+                            setCompanyList(data.result)
+                        })
+                }
+            }}
+            onChange={(value) => {
+                if(value !== undefined){
+                    let existIndex = GridDataOption.namedFilters.findIndex(nf => nf.name === "companyId");
+                    if(existIndex !== -1){
+                        GridDataOption.namedFilters.splice(existIndex, 1, {name:"companyId", value: value});
+                    }else{
+                        GridDataOption.namedFilters.push({name:"companyId", value: value});
+                    }
+                }else{
+                    GridDataOption.namedFilters = GridDataOption.namedFilters.filter(nf => nf.name !== "companyId")
+                }
+                reload()
+            }}
+            options={companyList?.map((company) => {
+                return {
+                    label: company.companyName,
+                    value: company.companyId
+                }
+            })}/>,
+        <SelectImpl 
+            placeholder={"Программа обучения"}
+            className={"filter"}
+            key={"studyProgram"}
+            onClick={() => {
+                if (spList.length === 0){
+                    requestToApi.post("/v1/apps/dnk/objects/studyprogram/getlist", {
+                        namedFilters:[],
+                        rowCount:100,
+                        page:1,
+                        orderBy:'studyProgramName'
+                    })
+                        .then((data) => {
+                            setSpList(data.result)
+                        })
+                }
+            }}
+            onChange={(value) => {
+                if(value !== undefined){
+                    let existIndex = GridDataOption.namedFilters.findIndex(nf => nf.name === "studyProgramId");
+                    if(existIndex !== -1){
+                        GridDataOption.namedFilters.splice(existIndex, 1, {name:"studyProgramId", value: value});
+                    }else{
+                        GridDataOption.namedFilters.push({name:"studyProgramId", value: value});
+                    }
+                }else{
+                    GridDataOption.namedFilters = GridDataOption.namedFilters.filter(nf => nf.name !== "studyProgramId")
+                }
+                reload()
+            }}
+            options={spList?.map((studyProgram) => {
+                return {
+                    label: studyProgram.studyProgramName,
+                    value: studyProgram.studyProgramId
+                }
+            })}/>,
+        <SelectImpl 
+            placeholder={"Группа"}
+            className={"filter"}
+            key={"workGroup"}
+            onClick={() => {
+                if (workgroupList.length === 0){
+                    requestToApi.post("/v1/apps/dnk/objects/workgroup/getlist", {
+                        namedFilters:[],
+                        rowCount:100,
+                        page:1,
+                        orderBy:'workGroupName'
+                    })
+                        .then((data) => {
+                            setWorkgroupList(data.result)
+                        })
+                }
+            }}
+            onChange={(value) => {
+                console.log(value)
+                if(value !== undefined && value > 0){
+                    let existIndex = GridDataOption.namedFilters.findIndex(nf => nf.name === "workGroupId");
+                    if(existIndex !== -1){
+                        GridDataOption.namedFilters.splice(existIndex, 1, {name:"workGroupId", value: value});
+                    }else{
+                        GridDataOption.namedFilters.push({name:"workGroupId", value: value});
+                    }
+                }else{
+                    GridDataOption.namedFilters = GridDataOption.namedFilters.filter(nf => nf.name !== "workGroupId")
+                }
+                reload()
+            }}
+            options={workgroupList?.map((workGroup) => {
+                return {
+                    label: workGroup.workGroupName,
+                    value: workGroup.workGroupId
+                }
+            })}/>
+    ]
 
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -169,6 +266,7 @@ export default function Report(){
             <PageHeader
                 title={"Отчёт"}
                 buttons={buttons}
+                filters = {filters}
             />
             <Table
                 dataSource={reportList}
