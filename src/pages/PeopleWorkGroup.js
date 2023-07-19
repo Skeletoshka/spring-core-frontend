@@ -1,4 +1,4 @@
-import {Button, Modal, Table, Form} from 'antd';
+import {Button, Modal, Table, Form, Popconfirm} from 'antd';
 import Select from '../components/SelectImpl';
 import { useForm } from 'antd/es/form/Form';
 import React, { useState, useEffect } from 'react';
@@ -130,7 +130,15 @@ export default function PeopleWorkGroup(){
     }
 
     let buttons = [
-        <Button onClick={deleteRows}>Удалить</Button>,
+        <Popconfirm
+            title={"Подтверждение удаления"}
+            description={"Вы точно хотите удалить выделенные записи?"}
+            onConfirm={deleteRows}
+            okText={"Да"}
+            cancelText={"Нет"}
+        >
+            <Button>Удалить</Button>
+        </Popconfirm>,
         <Button onClick={reload}>Обновить</Button>,
         <Button onClick={() => setShow(true)}>Добавить</Button>
     ]
