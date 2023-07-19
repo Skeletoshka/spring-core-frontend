@@ -28,6 +28,7 @@ import Contract from "./pages/Contract";
 import Company from "./pages/Company";
 import Student from "./pages/Students";
 import Report from "./pages/Report";
+import AttendanceReport from './pages/AttendanceReport';
 
 class App extends Component {
   render() {
@@ -49,6 +50,7 @@ class App extends Component {
                   <Route path='/lk/direction' element={<Direction/>}/>
                   <Route path='/lk/people' element={<People/>}/>
                   <Route path='/lk/people/report' element={<Report/>}/>
+                  <Route path='/lk/attendance/report' element={<AttendanceReport/>}/>
                   <Route path='/lk/people/student' element={<Student/>}/>
                   <Route path='/lk/activity' element={<Activity/>}/>
                   <Route path='/lk/news' element={<News/>}/>

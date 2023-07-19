@@ -70,7 +70,18 @@ const Header = ()=>{
                 {
                     label: "Отчёт",
                     key: "report",
-                    onClick: () => navigate("/lk/people/report")
+                    children: [
+                        {
+                            label: "Программы обучения",
+                            key: "reportStudyProgram",
+                            onClick: () => navigate("/lk/people/report")
+                        },
+                        {
+                            label: "Посещаемость",
+                            key: "attendanceReport",
+                            onClick: () => navigate("lk/attendance/report")
+                        }
+                    ]
                 }
             ],
         },
