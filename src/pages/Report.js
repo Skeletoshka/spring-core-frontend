@@ -3,6 +3,7 @@ import {requestToApi} from "../components/Request";
 import PageHeader from "../components/PageHeader";
 import {Button, Table} from "antd";
 import SelectImpl from '../components/SelectImpl';
+import * as XLSX from 'xlsx'
 
 const columns = [
     {
@@ -253,12 +254,31 @@ export default function Report(){
         }
     }, [loading])
 
+    function downloadReport(){
+        requestToApi.post("/v1/apps/dnk/objects/report/getlist", GridDataOption)
+                .then(data => {
+                    data.result?.map((entity) => {
+                        entity.contractDate = new Date(entity.contractDate).toLocaleDateString()
+                        entity.peopleDateStart = new Date(entity.peopleDateStart).toLocaleDateString()
+                        entity.peopleDateBirth = new Date(entity.peopleDateBirth).toLocaleDateString()
+                    })
+                    const worksheet = XLSX.utils.json_to_sheet(data.result);
+                    const workbook = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+                    //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+                    //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+                    XLSX.writeFile(workbook, "Report.xlsx");
+                })
+                .finally(() => setLoading(false));
+    }
+
     function reload(){
         setLoading(true)
     }
 
     let buttons = [
         <Button onClick={reload}>Обновить</Button>,
+        <Button onClick={downloadReport}>Скачать отчёт</Button>,
     ]
 
     return (
