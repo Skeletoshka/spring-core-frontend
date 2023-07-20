@@ -70,6 +70,11 @@ div{
   margin-bottom: 1%;
 }
 
+.childFormItem{
+  margin-right: 1em;
+  display: inline-block;
+}
+
 .pageHeaderDivChild{
   display: flex;
   flex-direction: row;
@@ -129,4 +134,19 @@ div{
 .filter{
   margin-left: 0.5em;
   width: 15%;
+}
+
+.registry{
+  width: 100%;
+  padding: 20;
+  margin-top: 2em;
+}
+
+.chooseRole{
+  display:"flex";
+  flex-direction: "column"; 
+}
+
+.ant-descriptions-item-label{
+  color: black;
 }
